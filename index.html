@@ -7,13 +7,11 @@
   <meta name="description" content="Osman Şahin — Yığın Değil, İşçi, Web Tasarımcı, Fani" />
   <title>Osman Şahin</title>
 
-  <!-- Google Fonts: Elms Sans (modern, Source Sans Pro'nun yerini alır) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
     rel="stylesheet">
 
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -26,7 +24,6 @@
     <div id="overlay" aria-hidden="true"></div>
 
     <main id="main">
-      <!-- Header -->
       <header id="header">
         <h1>Osman Şahin</h1>
         <p>Yığın Değil &nbsp;&bull;&nbsp; İşçi &nbsp;&bull;&nbsp; Web Tasarımcı &nbsp;&bull;&nbsp; Fani</p>
@@ -60,7 +57,6 @@
         </nav>
       </header>
 
-      <!-- Footer -->
       <footer id="footer">
         <span class="copyright">&copy; Osman Şahin</span>
       </footer>
@@ -68,17 +64,15 @@
   </div>
 
   <script>
-    // Sayfa yüklenince loading sınıfını kaldır (animasyonları aktif et)
     window.addEventListener('load', () => {
       document.body.classList.remove('loading');
     });
-
-    // Mobil: yatay kaydırmayı ve orientation değişimini yönet
     window.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
     window.addEventListener('orientationchange', () => {
       document.documentElement.scrollTop = 0;
     });
   </script>
+
 </body>
 
 </html>
