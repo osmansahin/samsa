@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Osman Şahin — Yığın Değil, İşçi, Web Tasarımcı, Fani" />
+  <title>Osman Şahin</title>
+
+  <!-- Google Fonts: Elms Sans (modern, Source Sans Pro'nun yerini alır) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="bg" aria-hidden="true"></div>
+    <div id="overlay" aria-hidden="true"></div>
+
+    <main id="main">
+      <!-- Header -->
+      <header id="header">
+        <h1>Osman Şahin</h1>
+        <p>Yığın Değil &nbsp;&bull;&nbsp; İşçi &nbsp;&bull;&nbsp; Web Tasarımcı &nbsp;&bull;&nbsp; Fani</p>
+
+        <nav aria-label="Sosyal medya bağlantıları">
+          <ul>
+            <li>
+              <a href="https://vsco.co/samsaninsirtinayapisanelma/" target="_blank" rel="noopener noreferrer"
+                aria-label="VSCO">
+                <i class="fa-brands fa-vsco" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.youtube.com/user/sahinosman58" target="_blank" rel="noopener noreferrer"
+                aria-label="YouTube">
+                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li>
+              <a href="https://tr.pinterest.com/osuranboga/" target="_blank" rel="noopener noreferrer"
+                aria-label="Pinterest">
+                <i class="fa-brands fa-pinterest" aria-hidden="true"></i>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:sahinosman.58@gmail.com?Subject=Merhabaa" aria-label="E-posta gönder">
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <!-- Footer -->
+      <footer id="footer">
+        <span class="copyright">&copy; Osman Şahin</span>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Sayfa yüklenince loading sınıfını kaldır (animasyonları aktif et)
+    window.addEventListener('load', () => {
+      document.body.classList.remove('loading');
+    });
+
+    // Mobil: yatay kaydırmayı ve orientation değişimini yönet
+    window.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
+    window.addEventListener('orientationchange', () => {
+      document.documentElement.scrollTop = 0;
+    });
+  </script>
+</body>
+
+</html>

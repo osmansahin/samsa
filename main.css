@@ -1,0 +1,417 @@
+/* ============================================================
+   Osman Şahin — Kişisel Site
+   Modernize: vendor-prefix yok, CSS custom properties,
+               Elms Sans fontu, temiz keyframe'ler
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* ── Reset (modern, minimal) ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+/* ── Tokens ── */
+:root {
+  --font-body: 'Elms Sans', sans-serif;
+  --font-size-base: 15pt;
+  --color-text: #fff;
+  --color-bg-fallback: #348cb2;
+  --transition-fast: 0.2s ease-in-out;
+  --anim-duration-wrapper: 3s;
+  --anim-duration-overlay: 1.5s;
+  --anim-delay-overlay: 1.5s;
+  --anim-duration-header: 1s;
+  --anim-delay-header: 2.25s;
+  --icon-size: 5.35em;
+}
+
+/* ── Base ── */
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1.75;
+  color: var(--color-text);
+  background: var(--color-bg-fallback);
+  -webkit-text-size-adjust: none;
+}
+
+/* Animasyonları yükleme sırasında durdur */
+body.loading * {
+  animation: none !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  outline: 0;
+  border-bottom: dotted 1px;
+  transition: border-color var(--transition-fast);
+}
+
+a:hover {
+  border-color: transparent;
+}
+
+/* ── Keyframes ── */
+@keyframes wrapper {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes bg {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(var(--bg-scroll-end), 0, 0);
+  }
+}
+
+@keyframes overlay {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes header {
+  from {
+    transform: translate3d(0, 1em, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes nav-icons {
+  from {
+    transform: translate3d(0, 1em, 0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+/* ── Wrapper ── */
+#wrapper {
+  animation: wrapper var(--anim-duration-wrapper) forwards;
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+/* ── Background ── */
+:root {
+  --bg-scroll-end: -2250px;
+}
+
+#bg {
+  --bg-size: 2250px;
+  animation: bg 60s linear infinite;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  background: var(--color-bg-fallback) url("images/bg.jpg") bottom left;
+  background-repeat: repeat-x;
+  background-size: var(--bg-size) auto;
+  height: 100%;
+  left: 0;
+  opacity: 1;
+  position: fixed;
+  top: 0;
+  width: calc(var(--bg-size) * 3);
+}
+
+/* ── Overlay ── */
+#overlay {
+  animation: overlay var(--anim-duration-overlay) var(--anim-delay-overlay) forwards;
+  background-attachment: fixed, fixed;
+  background-image: url("images/overlay-pattern.png"), url("images/overlay.svg");
+  background-position: top left, center center;
+  background-repeat: repeat, no-repeat;
+  background-size: auto, cover;
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+/* ── Main ── */
+#main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  text-align: center;
+  top: 0;
+  width: 100%;
+}
+
+/* ── Header ── */
+#header {
+  animation: header var(--anim-duration-header) var(--anim-delay-header) forwards;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  cursor: default;
+  opacity: 0;
+  position: relative;
+  text-align: center;
+  width: 90%;
+}
+
+#header h1 {
+  font-size: 4.35em;
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+#header p {
+  font-size: 1.25em;
+  margin: 0.75em 0 0.25em;
+  opacity: 0.75;
+}
+
+#header nav {
+  margin: 1.5em 0 0;
+}
+
+#header nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 0.25em;
+  flex-wrap: wrap;
+}
+
+#header nav li {
+  animation: nav-icons 0.5s ease-in-out forwards;
+  backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--icon-size);
+  width: var(--icon-size);
+  opacity: 0;
+}
+
+/* Kademeli ikon animasyon gecikmeleri */
+#header nav li:nth-child(1) {
+  animation-delay: 2.50s;
+}
+
+#header nav li:nth-child(2) {
+  animation-delay: 2.75s;
+}
+
+#header nav li:nth-child(3) {
+  animation-delay: 3.00s;
+}
+
+#header nav li:nth-child(4) {
+  animation-delay: 3.25s;
+}
+
+#header nav li:nth-child(5) {
+  animation-delay: 3.50s;
+}
+
+#header nav li:nth-child(6) {
+  animation-delay: 3.75s;
+}
+
+#header nav li:nth-child(7) {
+  animation-delay: 4.00s;
+}
+
+#header nav li:nth-child(8) {
+  animation-delay: 4.25s;
+}
+
+#header nav li:nth-child(9) {
+  animation-delay: 4.50s;
+}
+
+#header nav li:nth-child(10) {
+  animation-delay: 4.75s;
+}
+
+#header nav a {
+  -webkit-tap-highlight-color: transparent;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: solid 1px #fff;
+  font-size: 1.75em;
+  height: 2.5em;
+  width: 2.5em;
+  transition: all var(--transition-fast);
+}
+
+#header nav a:hover {
+  font-size: 1.925em;
+  /* 1.75 * 1.1 */
+  background-color: rgba(255, 255, 255, 0.175);
+}
+
+#header nav a:active {
+  font-size: 1.6625em;
+  /* 1.75 * 0.95 */
+  background-color: rgba(255, 255, 255, 0.35);
+}
+
+/* ── Footer ── */
+#footer {
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5) 75%);
+  bottom: 0;
+  cursor: default;
+  height: 6em;
+  left: 0;
+  line-height: 8em;
+  position: absolute;
+  text-align: center;
+  width: 100%;
+}
+
+/* ── Responsive: Wide (≤ 1680px) ── */
+@media screen and (max-width: 1680px) {
+  :root {
+    --bg-scroll-end: -1500px;
+  }
+
+  body {
+    font-size: 13pt;
+  }
+
+  #bg {
+    --bg-size: 1500px;
+    background-size: var(--bg-size) auto;
+    width: calc(var(--bg-size) * 3);
+  }
+}
+
+/* ── Responsive: Normal (≤ 1280px) ── */
+@media screen and (max-width: 1280px) {
+  :root {
+    --bg-scroll-end: -750px;
+  }
+
+  body {
+    font-size: 12pt;
+  }
+
+  #bg {
+    --bg-size: 750px;
+    background-size: var(--bg-size) auto;
+    width: calc(var(--bg-size) * 3);
+  }
+}
+
+/* ── Responsive: Mobile (≤ 736px) ── */
+@media screen and (max-width: 736px) {
+  :root {
+    --bg-scroll-end: -300px;
+  }
+
+  body {
+    min-width: 320px;
+    font-size: 11pt;
+  }
+
+  #bg {
+    --bg-size: 300px;
+    background-size: var(--bg-size) auto;
+    width: calc(var(--bg-size) * 3);
+  }
+
+  #header h1 {
+    font-size: 2.5em;
+  }
+
+  #header p {
+    font-size: 1em;
+  }
+
+  #header nav {
+    font-size: 1em;
+  }
+
+  #header nav a:hover,
+  #header nav a:active {
+    font-size: 1.75em;
+  }
+}
+
+/* ── Responsive: Mobile Portrait (≤ 480px) ── */
+@media screen and (max-width: 480px) {
+  :root {
+    --bg-scroll-end: -412.5px;
+  }
+
+  #bg {
+    --bg-size: 412.5px;
+    background-size: var(--bg-size) auto;
+    width: calc(var(--bg-size) * 3);
+  }
+
+  #header nav {
+    padding: 0 1em;
+  }
+}
