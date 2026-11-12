@@ -1,0 +1,697 @@
+/* ============================================================
+   Osman Şahin — Kişisel Site (Riso / Letterpress Sürümü)
+   Esin kaynağı: Atölye / Tezgâh Riso-Letterpress + Wada Sanzo
+   Samsa düzeni, ritmi ve bağlantıları korunarak basılmıştır.
+   ============================================================ */
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+/* ── Tokens (Varsayılan: Wada 167 — Krem kâğıt & Vandar Poel's Blue) ── */
+:root {
+  --paper: #F3EEE4;
+  --ink-1: #064f6e;
+  --ink-2: #c2ae93;
+  --ink-3: #a7d4e4;
+
+  --font-display: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-size-base: 15pt;
+
+  --ease-press: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 0.24s var(--ease-press);
+
+  --bg-size: clamp(700px, 140vh, 1660px);
+  --bg-sink: -0.04;
+  --icon-size: 4.8em;
+  --footer-h: 48px;
+}
+
+/* ── Base ── */
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  color: var(--ink-1);
+  background-color: var(--paper);
+  transition: background-color 0.45s var(--ease-press), color 0.35s var(--ease-press);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: none;
+}
+
+body.loading * {
+  animation: none !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  outline: 0;
+  border-bottom: dotted 1px currentColor;
+  transition: border-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+a:hover {
+  border-color: transparent;
+}
+
+/* ── Keyframes ── */
+@keyframes wrapper-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bg-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(var(--bg-size) * -1), 0, 0); }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes header-in {
+  from {
+    transform: translate3d(0, 14px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes nav-stamp {
+  from {
+    transform: translate3d(0, 14px, 0) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Wrapper ── */
+#wrapper {
+  animation: wrapper-in 0.55s var(--ease-press) forwards;
+  background-color: var(--paper);
+  transition: background-color 0.45s var(--ease-press);
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  isolation: isolate;
+}
+
+/* ── Paper Grain (Kâğıt dişi ve elyaf dokusu — saydam normal katman) ── */
+#paper-grain {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  background-repeat: repeat;
+  background-size: 256px 256px;
+  transform: translateZ(0);
+}
+
+/* ── Scrolling Mountain Riso Panorama (#bg) ── */
+#bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--footer-h);
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-bottom: 1px solid color-mix(in srgb, var(--ink-1) 18%, transparent);
+  transition: opacity 0.36s var(--ease-press);
+}
+
+body.printing #bg {
+  opacity: 0.72;
+}
+
+.bg-strip {
+  position: absolute;
+  bottom: calc(var(--bg-size) * var(--bg-sink));
+  left: 0;
+  display: block;
+  height: calc(var(--bg-size) * 0.221333);
+  width: calc(var(--bg-size) * var(--bg-tiles, 3));
+  backface-visibility: hidden;
+  will-change: transform;
+  animation: bg-scroll 60s linear infinite;
+}
+
+/* ── Diagonal Overlay + Registration Marks (#overlay) ── */
+#overlay {
+  animation: overlay-in 0.8s 0.22s var(--ease-press) forwards;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+#overlay-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.reg-marks {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  color: var(--ink-1);
+  opacity: 0.28;
+}
+
+.crop {
+  position: fixed;
+  width: 18px;
+  height: 18px;
+}
+
+.crop::before,
+.crop::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+
+.crop::before {
+  height: 1px;
+  width: 18px;
+}
+
+.crop::after {
+  width: 1px;
+  height: 18px;
+}
+
+.crop.tl { top: 18px; left: 18px; }
+.crop.tl::before { top: 0; left: 0; }
+.crop.tl::after { top: 0; left: 0; }
+
+.crop.tr { top: 18px; right: 18px; }
+.crop.tr::before { top: 0; right: 0; }
+.crop.tr::after { top: 0; right: 0; }
+
+.crop.bl { bottom: 18px; left: 18px; }
+.crop.bl::before { bottom: 0; left: 0; }
+.crop.bl::after { bottom: 0; left: 0; }
+
+.crop.br { bottom: 18px; right: 18px; }
+.crop.br::before { bottom: 0; right: 0; }
+.crop.br::after { bottom: 0; right: 0; }
+
+.crosshair {
+  position: fixed;
+  opacity: 0.85;
+}
+
+.crosshair.tl { top: 34px; left: 34px; }
+.crosshair.br { bottom: 13px; right: 44px; }
+
+/* ── Main ── */
+#main {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: clamp(48px, 12.5vh, 124px);
+  text-align: center;
+  transform: translateZ(0);
+}
+
+/* ── Header ── */
+#header {
+  animation: header-in 0.75s 0.35s var(--ease-press) forwards;
+  backface-visibility: hidden;
+  cursor: default;
+  opacity: 0;
+  position: relative;
+  text-align: center;
+  width: min(90%, 760px);
+}
+
+#header h1 {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(2.55rem, 6.2vw, 4.45rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.02;
+  color: var(--ink-1);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.34);
+  isolation: isolate;
+}
+
+/* Letterpress / Riso ikinci kalıp ofset izi */
+#header h1::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  color: var(--ink-3);
+  opacity: 0.78;
+  mix-blend-mode: multiply;
+  transform: translate(3.5px, 3.5px);
+  transition: transform 0.5s var(--ease-press), color 0.4s var(--ease-press);
+  pointer-events: none;
+}
+
+body.printing #header h1::before {
+  transform: translate(9px, 7px);
+}
+
+#header .tagline {
+  font-family: var(--font-body);
+  font-size: clamp(0.9rem, 1.55vw, 1.16rem);
+  font-weight: 500;
+  letter-spacing: 0.035em;
+  margin: 0.85em 0 0.3em;
+  color: var(--ink-1);
+  opacity: 0.86;
+}
+
+#header .tagline .sep {
+  display: inline-block;
+  margin: 0 0.45em;
+  color: var(--ink-2);
+  opacity: 0.9;
+}
+
+#header nav {
+  margin: 1.85em 0 0;
+}
+
+#header nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 0.55em;
+  flex-wrap: wrap;
+}
+
+#header nav li {
+  animation: nav-stamp 0.48s var(--ease-press) forwards;
+  backface-visibility: hidden;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--icon-size);
+  width: var(--icon-size);
+  opacity: 0;
+}
+
+/* Kademeli damga girişi */
+#header nav li:nth-child(1) { animation-delay: 0.62s; }
+#header nav li:nth-child(2) { animation-delay: 0.71s; }
+#header nav li:nth-child(3) { animation-delay: 0.80s; }
+#header nav li:nth-child(4) { animation-delay: 0.89s; }
+#header nav li:nth-child(5) { animation-delay: 0.98s; }
+
+#header nav a {
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1.6px solid var(--ink-1);
+  color: var(--ink-1);
+  background-color: transparent;
+  height: 3.45rem;
+  width: 3.45rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+/* Kayık ikinci mürekkep halkası; hover'da tam kayda (0,0) oturur */
+#header nav a::after {
+  content: "";
+  position: absolute;
+  inset: -1.6px;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--ink-2) 76%, var(--ink-1) 24%);
+  opacity: 0.7;
+  transform: translate(2.5px, 2.5px);
+  transition: transform var(--transition-fast), opacity var(--transition-fast), border-color 0.35s var(--ease-press);
+  pointer-events: none;
+}
+
+#header nav a:hover,
+#header nav a:focus-visible {
+  transform: scale(1.09);
+  background-color: rgba(6, 79, 110, 0.06);
+  background-color: color-mix(in srgb, var(--ink-1) 9%, transparent);
+}
+
+#header nav a:hover::after,
+#header nav a:focus-visible::after {
+  transform: translate(0, 0);
+  opacity: 0.95;
+}
+
+#header nav a:focus-visible {
+  outline: 2px solid var(--ink-1);
+  outline-offset: 4px;
+}
+
+#header nav a:active {
+  transform: scale(0.95);
+  background-color: color-mix(in srgb, var(--ink-1) 16%, transparent);
+}
+
+#header nav .seal-icon {
+  display: block;
+  width: 1.42rem;
+  height: 1.42rem;
+  transition: transform var(--transition-fast);
+}
+
+#header nav .seal-tezgah {
+  width: 1.38rem;
+  height: 1.38rem;
+}
+
+/* Riso dizgi etiketi: üzerine gelince (veya klavye odağında) buton altında açılır */
+#header nav .seal-label {
+  position: absolute;
+  top: calc(50% + 2.3rem);
+  left: 50%;
+  transform: translate3d(-50%, -4px, 0);
+  padding: 0.24rem 0.58rem;
+  border-radius: 2px;
+  border: 1px solid color-mix(in srgb, var(--ink-1) 38%, transparent);
+  background-color: var(--paper);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink-2) 72%, transparent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+  transition:
+    opacity 0.18s var(--ease-press),
+    transform 0.22s var(--ease-press),
+    background-color 0.35s var(--ease-press),
+    color 0.35s var(--ease-press),
+    border-color 0.35s var(--ease-press);
+}
+
+@media (hover: hover) {
+  #header nav a:hover + .seal-label {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+#header nav a:focus-visible + .seal-label {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0);
+}
+
+/* ── Blog Bağlantısı (Editoryal Riso Kartı — sosyal dairelerden ayrı kimlik) ── */
+#header .blog-wrap {
+  margin-top: 2.35rem;
+  display: flex;
+  justify-content: center;
+  animation: nav-stamp 0.48s 1.07s var(--ease-press) forwards;
+  backface-visibility: hidden;
+  opacity: 0;
+}
+
+#header .blog-cta {
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.54rem 1.06rem 0.54rem 0.94rem;
+  border-radius: 2px;
+  border: 1.5px solid var(--ink-1);
+  background-color: var(--paper);
+  background-color: color-mix(in srgb, var(--paper) 92%, transparent);
+  color: var(--ink-1);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.15;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  transition:
+    transform var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color 0.35s var(--ease-press);
+}
+
+/* Kayık ikinci mürekkep çerçevesi; hover'da tam kayda (0,0) oturur */
+#header .blog-cta::after {
+  content: "";
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 2px;
+  border: 1.4px solid color-mix(in srgb, var(--ink-2) 82%, var(--ink-1) 18%);
+  opacity: 0.78;
+  transform: translate(3px, 3px);
+  transition: transform var(--transition-fast), opacity var(--transition-fast), border-color 0.35s var(--ease-press);
+  pointer-events: none;
+}
+
+#header .blog-cta:hover,
+#header .blog-cta:focus-visible {
+  transform: translate3d(0, -1px, 0);
+  border-color: var(--ink-1);
+  background-color: color-mix(in srgb, var(--ink-3) 26%, var(--paper));
+}
+
+#header .blog-cta:hover::after,
+#header .blog-cta:focus-visible::after {
+  transform: translate(0, 0);
+  opacity: 1;
+}
+
+#header .blog-cta:focus-visible {
+  outline: 2px solid var(--ink-1);
+  outline-offset: 4px;
+}
+
+#header .blog-cta:active {
+  transform: translate3d(0, 1px, 0) scale(0.98);
+  background-color: color-mix(in srgb, var(--ink-1) 14%, var(--paper));
+}
+
+#header .blog-icon {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  opacity: 0.92;
+}
+
+#header .blog-text {
+  display: inline-block;
+}
+
+#header .blog-arrow {
+  display: block;
+  width: 0.94rem;
+  height: 0.94rem;
+  flex-shrink: 0;
+  margin-left: 0.05rem;
+  opacity: 0.78;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+#header .blog-cta:hover .blog-arrow,
+#header .blog-cta:focus-visible .blog-arrow {
+  transform: translate3d(2px, -2px, 0);
+  opacity: 1;
+}
+
+/* ── Footer / Künye ── */
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--footer-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-1);
+  opacity: 0.82;
+  cursor: default;
+}
+
+/* ── Responsive: Wide (≤ 1680px) ── */
+@media screen and (max-width: 1680px) {
+  body {
+    font-size: 13.5pt;
+  }
+}
+
+/* ── Responsive: Normal (≤ 1280px) ── */
+@media screen and (max-width: 1280px) {
+  body {
+    font-size: 12.5pt;
+  }
+}
+
+/* ── Responsive: Alçak Masaüstü Penceresi (≤ 640px yükseklik) ── */
+@media screen and (max-height: 640px) {
+  :root {
+    --bg-size: clamp(540px, 128vh, 960px);
+  }
+
+  #main {
+    padding-bottom: 42px;
+  }
+
+  #header nav {
+    margin-top: 1.2em;
+  }
+
+  #header .blog-wrap {
+    margin-top: 2.15rem;
+  }
+
+  #header nav a {
+    background-color: color-mix(in srgb, var(--paper) 92%, transparent);
+  }
+}
+
+/* ── Responsive: Mobile (≤ 736px) ── */
+@media screen and (max-width: 736px) {
+  :root {
+    --bg-size: clamp(480px, 92vh, 840px);
+    --bg-sink: -0.02;
+    --icon-size: 4.1em;
+    --footer-h: 44px;
+  }
+
+  body {
+    min-width: 320px;
+    font-size: 11.5pt;
+  }
+
+  #main {
+    padding-bottom: 10vh;
+  }
+
+  #header h1::before {
+    transform: translate(2.5px, 2.5px);
+  }
+
+  #header nav a {
+    height: 3.1rem;
+    width: 3.1rem;
+  }
+
+  #header nav .seal-icon {
+    width: 1.28rem;
+    height: 1.28rem;
+  }
+
+  #header nav .seal-label {
+    top: calc(50% + 2.05rem);
+  }
+
+  #header .blog-wrap {
+    margin-top: 2.15rem;
+  }
+
+  .crosshair {
+    display: none;
+  }
+}
+
+/* ── Responsive: Mobile Portrait (≤ 480px) ── */
+@media screen and (max-width: 480px) {
+  :root {
+    --bg-size: clamp(480px, 90vh, 760px);
+    --bg-sink: -0.015;
+    --icon-size: 3.55em;
+    --footer-h: 44px;
+  }
+
+  #header nav {
+    padding: 0 0.5em;
+  }
+
+  #header nav ul {
+    gap: 0.45em;
+  }
+
+  #header nav a {
+    height: 2.85rem;
+    width: 2.85rem;
+  }
+
+  .crop {
+    width: 12px;
+    height: 12px;
+  }
+
+  .crop.tl { top: 12px; left: 12px; }
+  .crop.tr { top: 12px; right: 12px; }
+  .crop.bl { bottom: 12px; left: 12px; }
+  .crop.br { bottom: 12px; right: 12px; }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .bg-strip {
+    animation: none;
+  }
+
+  #wrapper,
+  #overlay,
+  #header,
+  #header nav li,
+  #header .blog-wrap {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}

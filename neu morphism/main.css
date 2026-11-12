@@ -1,0 +1,596 @@
+/* ============================================================
+   Osman Şahin — Kişisel Site (Neumorphism / Soft UI Sürümü)
+   Tek parça mat seramik yüzey (Toz Taşı #DDE3EA) üzerinde
+   135° sol-üst ışık, içbükey/dışbükey formlar ve oyma dağ kabartması.
+   ============================================================ */
+
+/* ── Reset ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+/* ── Tokens (Mat Toz Taşı / Sis Seramiği — tek malzeme yüzeyi) ── */
+:root {
+  --surface: #DDE3EA;
+  --surface-hi: #E6ECF3;
+  --surface-lo: #D3DAE3;
+  --light: rgba(255, 255, 255, 0.88);
+  --light-soft: rgba(255, 255, 255, 0.64);
+  --shadow: rgba(162, 175, 194, 0.62);
+  --shadow-strong: rgba(151, 165, 185, 0.76);
+  --rim: rgba(255, 255, 255, 0.52);
+
+  --ink: #2C3B4D;
+  --ink-muted: #55667A;
+  --accent: #366C8F;
+
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-size-base: 15pt;
+
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 0.24s var(--ease-soft);
+
+  --bg-size: clamp(700px, 140vh, 1660px);
+  --bg-sink: -0.04;
+  --icon-size: 4.8em;
+  --footer-h: 48px;
+}
+
+/* ── Base ── */
+body {
+  font-family: var(--font-body);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.6;
+  color: var(--ink);
+  background-color: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: none;
+}
+
+body.loading * {
+  animation: none !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  outline: 0;
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* ── Keyframes ── */
+@keyframes wrapper-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes bg-scroll {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(calc(var(--bg-size) * -1), 0, 0); }
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes header-in {
+  from {
+    transform: translate3d(0, 14px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes seal-rise {
+  from {
+    transform: translate3d(0, 12px, 0) scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ── Wrapper ── */
+#wrapper {
+  animation: wrapper-in 0.55s var(--ease-soft) forwards;
+  background: radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.34), transparent 55%),
+              var(--surface);
+  height: 100%;
+  left: 0;
+  opacity: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  isolation: isolate;
+}
+
+/* ── Çapraz Yumuşak Işık Düzlemleri (#overlay) ── */
+#overlay {
+  animation: overlay-in 0.8s 0.2s var(--ease-soft) forwards;
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+#overlay-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Oyma Kabartma Dağ Panoraması (#bg) ── */
+#bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--footer-h);
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(162, 175, 194, 0.35);
+}
+
+.bg-strip {
+  position: absolute;
+  bottom: calc(var(--bg-size) * var(--bg-sink));
+  left: 0;
+  display: block;
+  height: calc(var(--bg-size) * 0.221333);
+  width: calc(var(--bg-size) * var(--bg-tiles, 3));
+  backface-visibility: hidden;
+  will-change: transform;
+  animation: bg-scroll 60s linear infinite;
+}
+
+/* ── Main ── */
+#main {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: clamp(48px, 12.5vh, 124px);
+  text-align: center;
+  transform: translateZ(0);
+}
+
+/* ── Header ── */
+#header {
+  animation: header-in 0.72s 0.3s var(--ease-soft) forwards;
+  backface-visibility: hidden;
+  cursor: default;
+  opacity: 0;
+  position: relative;
+  text-align: center;
+  width: min(90%, 760px);
+}
+
+#header h1 {
+  position: relative;
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.35rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+  color: var(--ink);
+  text-shadow:
+    -1px -1px 2px rgba(255, 255, 255, 0.85),
+     2px  3px 5px rgba(154, 168, 189, 0.45);
+}
+
+#header .tagline {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  font-family: var(--font-body);
+  font-size: clamp(0.88rem, 1.5vw, 1.12rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  margin: 0.9em 0 0.25em;
+  color: var(--ink-muted);
+}
+
+/* İçbükey mikro çukur ayırıcı */
+#header .tagline .sep {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin: 0 0.12em;
+  border-radius: 50%;
+  background-color: var(--surface);
+  box-shadow:
+    inset 1.5px 1.5px 2.5px var(--shadow-strong),
+    inset -1.5px -1.5px 2.5px var(--light);
+  vertical-align: middle;
+}
+
+/* ── Sosyal Daireler (Dışbükey Yumuşak Butonlar) ── */
+#header nav {
+  margin: 1.9em 0 0;
+}
+
+#header nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 0.72em;
+  flex-wrap: wrap;
+}
+
+#header nav li {
+  animation: seal-rise 0.48s var(--ease-soft) forwards;
+  backface-visibility: hidden;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--icon-size);
+  width: var(--icon-size);
+  opacity: 0;
+}
+
+#header nav li:nth-child(1) { animation-delay: 0.56s; }
+#header nav li:nth-child(2) { animation-delay: 0.65s; }
+#header nav li:nth-child(3) { animation-delay: 0.74s; }
+#header nav li:nth-child(4) { animation-delay: 0.83s; }
+#header nav li:nth-child(5) { animation-delay: 0.92s; }
+
+#header nav a {
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  height: 3.55rem;
+  width: 3.55rem;
+  color: var(--ink);
+  background: linear-gradient(145deg, var(--surface-hi), var(--surface-lo));
+  border: 1px solid var(--rim);
+  box-shadow:
+     7px  7px 14px var(--shadow),
+    -7px -7px 14px var(--light),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.5);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+#header nav a:hover,
+#header nav a:focus-visible {
+  transform: translate3d(0, -2px, 0);
+  color: var(--accent);
+  box-shadow:
+     9px  9px 18px var(--shadow-strong),
+    -9px -9px 18px var(--light),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.7);
+}
+
+#header nav a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+/* Basılınca dışbükey buton içbükey yuvaya çöker */
+#header nav a:active {
+  transform: scale(0.96);
+  color: var(--accent);
+  background: linear-gradient(145deg, var(--surface-lo), var(--surface-hi));
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset  5px  5px 10px var(--shadow-strong),
+    inset -5px -5px 10px var(--light);
+}
+
+#header nav .neu-icon {
+  display: block;
+  width: 1.42rem;
+  height: 1.42rem;
+  transition: transform var(--transition-fast);
+}
+
+#header nav .neu-tezgah {
+  width: 1.38rem;
+  height: 1.38rem;
+}
+
+/* Hover / focus anında buton altında açılan yumuşak kapsül etiket */
+#header nav .seal-label {
+  position: absolute;
+  top: calc(50% + 2.35rem);
+  left: 50%;
+  transform: translate3d(-50%, -4px, 0);
+  padding: 0.28rem 0.68rem;
+  border-radius: 999px;
+  border: 1px solid var(--rim);
+  background: linear-gradient(145deg, var(--surface-hi), var(--surface));
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  line-height: 1.15;
+  white-space: nowrap;
+  box-shadow:
+     4px  4px  9px var(--shadow),
+    -4px -4px  9px var(--light);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+  transition: opacity 0.18s var(--ease-soft), transform 0.22s var(--ease-soft);
+}
+
+@media (hover: hover) {
+  #header nav a:hover + .seal-label {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+#header nav a:focus-visible + .seal-label {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0);
+}
+
+/* ── Blog Bağlantısı (İçbükey Yuva İçinde Dışbükey Dikdörtgen Tuş) ── */
+#header .blog-wrap {
+  margin-top: 2.35rem;
+  display: flex;
+  justify-content: center;
+  animation: seal-rise 0.48s 1.02s var(--ease-soft) forwards;
+  backface-visibility: hidden;
+  opacity: 0;
+}
+
+#header .blog-socket {
+  display: inline-flex;
+  padding: 4px;
+  border-radius: 15px;
+  background-color: var(--surface);
+  box-shadow:
+    inset  3px  3px 7px var(--shadow-strong),
+    inset -3px -3px 7px var(--light);
+}
+
+#header .blog-cta {
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.56rem 1.08rem 0.56rem 0.96rem;
+  border-radius: 11px;
+  border: 1px solid var(--rim);
+  background: linear-gradient(145deg, var(--surface-hi), var(--surface-lo));
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.15;
+  box-shadow:
+     4px  4px  9px var(--shadow),
+    -4px -4px  9px var(--light);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+#header .blog-cta:hover,
+#header .blog-cta:focus-visible {
+  transform: translate3d(0, -1px, 0);
+  color: var(--accent);
+  box-shadow:
+     6px  6px 12px var(--shadow-strong),
+    -5px -5px 10px var(--light);
+}
+
+#header .blog-cta:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+#header .blog-cta:active {
+  transform: translate3d(0, 1px, 0) scale(0.985);
+  background: linear-gradient(145deg, var(--surface-lo), var(--surface-hi));
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset  3px  3px  7px var(--shadow-strong),
+    inset -3px -3px  7px var(--light);
+}
+
+#header .blog-icon {
+  display: block;
+  width: 1.04rem;
+  height: 1.04rem;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+#header .blog-text {
+  display: inline-block;
+}
+
+#header .blog-arrow {
+  display: block;
+  width: 0.92rem;
+  height: 0.92rem;
+  flex-shrink: 0;
+  margin-left: 0.04rem;
+  opacity: 0.72;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+#header .blog-cta:hover .blog-arrow,
+#header .blog-cta:focus-visible .blog-arrow {
+  transform: translate3d(2px, -2px, 0);
+  opacity: 1;
+}
+
+/* ── Footer / Künye ── */
+#footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--footer-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface);
+  border-top: 1px solid rgba(255, 255, 255, 0.52);
+  font-size: 0.7em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  cursor: default;
+}
+
+/* ── Responsive: Wide (≤ 1680px) ── */
+@media screen and (max-width: 1680px) {
+  body {
+    font-size: 13.5pt;
+  }
+}
+
+/* ── Responsive: Normal (≤ 1280px) ── */
+@media screen and (max-width: 1280px) {
+  body {
+    font-size: 12.5pt;
+  }
+}
+
+/* ── Responsive: Alçak Masaüstü Penceresi (≤ 640px yükseklik) ── */
+@media screen and (max-height: 640px) {
+  :root {
+    --bg-size: clamp(540px, 128vh, 960px);
+  }
+
+  #main {
+    padding-bottom: 42px;
+  }
+
+  #header nav {
+    margin-top: 1.2em;
+  }
+
+  #header .blog-wrap {
+    margin-top: 2.15rem;
+  }
+}
+
+/* ── Responsive: Mobile (≤ 736px) ── */
+@media screen and (max-width: 736px) {
+  :root {
+    --bg-size: clamp(480px, 92vh, 840px);
+    --bg-sink: -0.02;
+    --icon-size: 4.15em;
+    --footer-h: 44px;
+  }
+
+  body {
+    min-width: 320px;
+    font-size: 11.5pt;
+  }
+
+  #main {
+    padding-bottom: 10vh;
+  }
+
+  #header nav a {
+    height: 3.15rem;
+    width: 3.15rem;
+  }
+
+  #header nav .neu-icon {
+    width: 1.28rem;
+    height: 1.28rem;
+  }
+
+  #header nav .seal-label {
+    top: calc(50% + 2.1rem);
+  }
+
+  #header .blog-wrap {
+    margin-top: 2.15rem;
+  }
+}
+
+/* ── Responsive: Mobile Portrait (≤ 480px) ── */
+@media screen and (max-width: 480px) {
+  :root {
+    --bg-size: clamp(480px, 90vh, 760px);
+    --bg-sink: -0.015;
+    --icon-size: 3.6em;
+    --footer-h: 44px;
+  }
+
+  #header nav {
+    padding: 0 0.5em;
+  }
+
+  #header nav ul {
+    gap: 0.55em;
+  }
+
+  #header nav a {
+    height: 2.9rem;
+    width: 2.9rem;
+    box-shadow:
+       5px  5px 10px var(--shadow),
+      -5px -5px 10px var(--light);
+  }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .bg-strip {
+    animation: none;
+  }
+
+  #wrapper,
+  #overlay,
+  #header,
+  #header nav li,
+  #header .blog-wrap {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+}
