@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Atölye YouTube" />
+  <title>Atölye YouTube</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:wght@300..700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --kagit: #f4f0e8;
+      --murekkep: #2b2a28;
+      --cizgi: #d9d2c4;
+      --vurgu: #2f5d73;
+      --font: 'Elms Sans', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--kagit);
+      color: var(--murekkep);
+      font-family: var(--font);
+      padding: 2rem 1.25rem;
+    }
+
+    main { text-align: center; }
+
+    h1 {
+      font-size: clamp(2rem, 7vw, 3rem);
+      font-weight: 650;
+      letter-spacing: -0.015em;
+      margin: 0 0 1.2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid var(--cizgi);
+    }
+
+    a {
+      color: var(--vurgu);
+      font-size: 1.05rem;
+      text-underline-offset: 0.2em;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --kagit: #1f1e1c;
+        --murekkep: #ebe6dc;
+        --cizgi: #3a3834;
+        --vurgu: #8fb8cc;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Atölye YouTube</h1>
+    <a href="/tezgah/gizlilik.html">Gizlilik Politikası</a>
+  </main>
+</body>
+
+</html>
