@@ -1,0 +1,956 @@
+/* ============================================================
+   Osman Şahin — Tek Baskı
+   Her ziyaret, üç mürekkepli bir presten çekilen tek bir baskı.
+   Yığın değil · İşçi · Web tasarımcı · Fani
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+/* ── Jetonlar ── */
+:root {
+  /* Baskı mürekkepleri — her baskı kendi değerlerini satır içi taşır */
+  --paper: #F3EEE4;
+  --key: #40456a;
+  --accent: #d96629;
+  --tint: #a5c8d1;
+
+  /* Tezgâh */
+  --bench-tint: var(--key);
+  --bench: color-mix(in oklab, var(--bench-tint) 13%, #141311);
+  --bench-ink: #ece6d9;
+  --bench-dim: rgba(236, 230, 217, 0.58);
+  --bench-faint: rgba(236, 230, 217, 0.14);
+  --graphite: #4a4744;
+
+  --display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --hand: 'Caveat', 'Segoe Print', cursive;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --sheet-w: min(44vw, calc((100dvh - 64px) / 1.45), 660px);
+  --age-dur: 1500s;
+}
+
+html {
+  background: var(--bench);
+  color-scheme: dark;
+  transition: background-color 1.2s var(--ease);
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--bench);
+  color: var(--bench-ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.45;
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 1.2s var(--ease);
+}
+
+/* Tezgâh yüzeyi: tek lamba ve ahşap/metal dişi */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 72% at 50% 46%, rgba(255, 236, 204, 0.075), transparent 72%),
+    var(--bench-grain, none);
+  background-size: auto, 200px 200px;
+}
+
+kbd {
+  font-family: var(--sans);
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.12em 0.45em 0.1em;
+  border-radius: 4px;
+  border: 1px solid var(--bench-faint);
+  color: var(--bench-dim);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 650;
+  font-stretch: 112%;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bench-dim);
+}
+
+/* ── Tezgâh düzeni ── */
+.bench {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--sheet-w) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "shop bed press"
+    "inks bed press"
+    "foot bed press";
+  column-gap: clamp(28px, 4.2vw, 84px);
+  padding: 32px clamp(20px, 3vw, 48px);
+}
+
+.shop {
+  grid-area: shop;
+}
+
+.shop-name {
+  font-family: var(--display);
+  font-size: 19px;
+  font-weight: 560;
+  font-variation-settings: "opsz" 24, "SOFT" 100;
+  letter-spacing: -0.005em;
+  line-height: 1.1;
+}
+
+.shop-desc {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--bench-dim);
+  font-stretch: 105%;
+}
+
+.bed {
+  grid-area: bed;
+  align-self: center;
+  display: grid;
+  position: relative;
+}
+
+.bed > .sheet {
+  grid-area: 1 / 1;
+}
+
+/* ── Kâğıt ── */
+.sheet {
+  position: relative;
+  z-index: 50;
+  width: var(--sheet-w);
+  container-type: inline-size;
+  isolation: isolate;
+  align-self: start;
+  background: var(--paper);
+  color: var(--key);
+  transform-origin: 50% 70%;
+  box-shadow:
+    0 0 0 0.5px rgba(0, 0, 0, 0.25),
+    0 1px 1px rgba(0, 0, 0, 0.3),
+    0 14px 28px -10px rgba(0, 0, 0, 0.55),
+    0 46px 90px -36px rgba(0, 0, 0, 0.7);
+}
+
+/* Kâğıt dişi (baskının üstünde, mürekkebi de dokular) */
+.sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  background-image: var(--grain, none);
+  background-size: 220px 220px;
+}
+
+.sheet.is-stacked {
+  pointer-events: none;
+}
+
+/* ── Kalıplar (her mürekkep ayrı katman, üst üste baskı = multiply) ── */
+.plate {
+  mix-blend-mode: multiply;
+  -webkit-mask-image: var(--speckle, none);
+  mask-image: var(--speckle, none);
+  -webkit-mask-size: 170px 170px;
+  mask-size: 170px 170px;
+}
+
+.plate--tint,
+.plate--accent {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.plate--tint { z-index: 1; }
+.plate--accent { z-index: 2; }
+
+.plate--key {
+  position: relative;
+  z-index: 3;
+}
+
+/* Baskıdan önce kalıplar boş kâğıttır */
+.js .sheet .plate {
+  clip-path: inset(0 0 100% 0);
+}
+
+.js .sheet .plate.is-inked {
+  clip-path: none;
+}
+
+/* Klonlanmış kalıplarda yalnız o mürekkebe ait öğeler basılır */
+.plate--tint .layout,
+.plate--tint .layout *,
+.plate--accent .layout,
+.plate--accent .layout * {
+  color: transparent !important;
+  border-color: transparent !important;
+}
+
+.plate--accent .layout .ac {
+  color: var(--accent) !important;
+}
+
+.plate--accent .layout .prog {
+  border-color: var(--accent) !important;
+}
+
+.plate--key .ac {
+  color: transparent;
+}
+
+.plate--key .prog {
+  border-color: transparent;
+}
+
+/* ── Baskı düzeni (tamamı kâğıt genişliğine göre: cqi) ── */
+.layout {
+  padding: 7cqi 7cqi 13cqi;
+}
+
+.block {
+  position: relative;
+  height: 54cqi;
+}
+
+.block canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.name {
+  margin-top: 4.6cqi;
+  margin-left: -0.6cqi;
+  font-family: var(--display);
+  font-size: 13.4cqi;
+  font-weight: 820;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+}
+
+.tagline {
+  margin-top: 2.8cqi;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em 0.85em;
+  font-family: var(--sans);
+  font-size: max(10px, 2.05cqi);
+  font-weight: 640;
+  font-stretch: 115%;
+  letter-spacing: 0.17em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.tagline .dot {
+  font-size: 0.62em;
+  letter-spacing: 0;
+}
+
+/* Program: bağlantılar */
+.program {
+  margin-top: 4.6cqi;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 5cqi;
+}
+
+.prog {
+  border-top: max(1px, 0.24cqi) solid;
+}
+
+.prog--lead {
+  grid-column: 1 / -1;
+  border-top-width: max(2px, 0.55cqi);
+}
+
+.prog a {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "no lbl arr"
+    ". hd hd";
+  column-gap: 1.8cqi;
+  align-items: baseline;
+  padding: 1.5cqi 0 2.1cqi;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Üstüne gelince satıra el ile açık mürekkep sürülür */
+.prog a::before {
+  content: "";
+  position: absolute;
+  inset: 0 -1.4cqi;
+  background: var(--tint);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.42s var(--ease);
+  z-index: -1;
+}
+
+.prog a:hover::before,
+.prog a:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.prog a:focus-visible {
+  outline: max(2px, 0.35cqi) solid currentColor;
+  outline-offset: 0.4cqi;
+}
+
+.plate--accent .prog.is-hot .no {
+  transform: translate(0.5cqi, -0.15em);
+}
+
+.no {
+  transition: transform 0.4s var(--ease);
+  grid-area: no;
+  font-family: var(--sans);
+  font-size: max(9px, 1.7cqi);
+  font-weight: 700;
+  font-stretch: 100%;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  transform: translateY(-0.15em);
+}
+
+.lbl {
+  grid-area: lbl;
+  font-family: var(--display);
+  font-size: max(17px, 4.5cqi);
+  font-weight: 640;
+  font-variation-settings: "opsz" 72, "SOFT" 60, "WONK" 0;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+
+.hd {
+  grid-area: hd;
+  margin-top: 0.5cqi;
+  font-family: var(--sans);
+  font-size: max(11px, 1.9cqi);
+  font-weight: 460;
+  font-stretch: 96%;
+  letter-spacing: 0.01em;
+  opacity: 0.74;
+  overflow-wrap: anywhere;
+}
+
+.arr {
+  grid-area: arr;
+  width: max(14px, 2.9cqi);
+  height: max(14px, 2.9cqi);
+  align-self: center;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: square;
+  transition: transform 0.4s var(--ease);
+}
+
+.prog a:hover .arr,
+.prog a:focus-visible .arr {
+  transform: translate(0.35cqi, -0.35cqi);
+}
+
+.prog a:hover .arr--mail,
+.prog a:focus-visible .arr--mail {
+  transform: translateX(0.6cqi);
+}
+
+/* Öne çıkan satır: Blog */
+.prog--lead a {
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-areas: "no lbl hd arr";
+  padding: 1.6cqi 0 2.2cqi;
+}
+
+.prog--lead .lbl {
+  font-size: max(26px, 8.2cqi);
+  font-weight: 760;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+.prog--lead .hd {
+  justify-self: end;
+  align-self: center;
+  margin: 0 0.4cqi 0 0;
+  text-align: right;
+}
+
+.prog--lead .arr {
+  width: max(18px, 4.6cqi);
+  height: max(18px, 4.6cqi);
+  stroke-width: 1.7;
+}
+
+@container (max-width: 430px) {
+  .tagline {
+    letter-spacing: 0.08em;
+    gap: 0.35em 0.5em;
+    font-stretch: 100%;
+  }
+
+  .program {
+    grid-template-columns: 1fr;
+  }
+
+  .prog--lead a {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "no lbl arr"
+      ". hd hd";
+  }
+
+  .prog--lead .hd {
+    justify-self: start;
+    text-align: left;
+    margin-top: 0.8cqi;
+  }
+}
+
+/* ── Kurşun kalem notu (baskı payında) ── */
+.pencil {
+  position: absolute;
+  z-index: 5;
+  left: 7cqi;
+  right: 7cqi;
+  bottom: 3.6cqi;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2cqi;
+  font-family: var(--hand);
+  font-size: max(14px, 3.15cqi);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--graphite);
+  opacity: 0.8;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.pencil .ti {
+  flex: 1;
+  text-align: center;
+  font-size: 0.94em;
+}
+
+.js .pencil {
+  clip-path: inset(0 100% 0 0);
+}
+
+.js .pencil.is-written {
+  clip-path: none;
+}
+
+/* ── Fani: kâğıt sararır, mürekkep solar ── */
+.age {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  background:
+    var(--foxing, none),
+    radial-gradient(120% 95% at 50% 45%, transparent 55%, rgba(150, 105, 50, 0.4) 100%),
+    linear-gradient(170deg, #ecd8ad, #e2c58e);
+}
+
+.sheet.is-printed .age {
+  animation: age var(--age-dur) linear forwards;
+}
+
+.sheet.is-printed .plate {
+  animation: ink-fade var(--age-dur) linear forwards;
+}
+
+@keyframes age {
+  to { opacity: 0.62; }
+}
+
+@keyframes ink-fade {
+  to { opacity: 0.72; }
+}
+
+/* ── Mürekkep merdanesi ── */
+.roller {
+  position: absolute;
+  z-index: 8;
+  top: 0;
+  left: -4.5%;
+  width: 109%;
+  pointer-events: none;
+  border-radius: 999px / 50%;
+  background:
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.32) 26%,
+      rgba(255, 255, 255, 0) 44%),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--roll-ink) 45%, #000) 0%,
+      var(--roll-ink) 38%,
+      color-mix(in oklab, var(--roll-ink) 70%, #000) 72%,
+      color-mix(in oklab, var(--roll-ink) 25%, #000) 100%);
+  box-shadow:
+    0 0.9cqi 1.6cqi rgba(0, 0, 0, 0.32),
+    0 2.8cqi 4cqi -1cqi rgba(0, 0, 0, 0.25);
+}
+
+.roller::before,
+.roller::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  width: 2.2%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #8b8a86, #3b3a37 60%, #2a2927);
+}
+
+.roller::before { left: -1.6%; }
+.roller::after { right: -1.6%; }
+
+/* ── Sağ kanat: pres ── */
+.press {
+  grid-area: press;
+  align-self: center;
+  justify-self: start;
+  width: min(100%, 300px);
+}
+
+.pull {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px 14px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(236, 230, 217, 0.2);
+  background: rgba(236, 230, 217, 0.045);
+  color: var(--bench-ink);
+  font-family: var(--sans);
+  font-size: 16.5px;
+  font-weight: 600;
+  font-stretch: 104%;
+  letter-spacing: 0.005em;
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.pull:hover {
+  background: rgba(236, 230, 217, 0.09);
+  border-color: rgba(236, 230, 217, 0.34);
+}
+
+.pull:focus-visible {
+  outline: 2px solid var(--bench-ink);
+  outline-offset: 3px;
+}
+
+.pull[aria-disabled="true"] {
+  cursor: progress;
+}
+
+.pull-text {
+  flex: 1;
+  text-align: left;
+}
+
+/* Pres kolu: oluk + topuz */
+.pull-lever {
+  position: relative;
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.pull-knob {
+  position: absolute;
+  left: 7px;
+  top: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.55), transparent 42%),
+    var(--accent);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
+  transition: transform 0.35s var(--ease), background-color 0.6s;
+}
+
+.pull:hover .pull-knob {
+  transform: translateY(3px);
+}
+
+.pull:active .pull-knob,
+.bench.is-printing .pull-knob {
+  transform: translateY(6px);
+}
+
+.ticket {
+  margin-top: 34px;
+}
+
+.ticket dl {
+  margin-top: 10px;
+  border-top: 1px solid var(--bench-faint);
+}
+
+.ticket dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 7px 0 6px;
+  border-bottom: 1px solid var(--bench-faint);
+  font-size: 13.5px;
+}
+
+.ticket dt {
+  color: var(--bench-dim);
+  font-stretch: 96%;
+  white-space: nowrap;
+}
+
+.ticket dd {
+  text-align: right;
+  font-weight: 560;
+  font-variant-numeric: tabular-nums;
+}
+
+.manifest {
+  margin-top: 30px;
+  display: grid;
+  gap: 12px;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--bench-dim);
+}
+
+.manifest dt {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 500;
+  font-variation-settings: "opsz" 18, "SOFT" 100;
+  font-size: 14px;
+  color: var(--bench-ink);
+}
+
+/* ── Sol kanat: mürekkepler ── */
+.inks {
+  grid-area: inks;
+  align-self: center;
+  justify-self: end;
+  width: min(100%, 250px);
+}
+
+.ink-list {
+  margin-top: 12px;
+  display: grid;
+  gap: 2px;
+}
+
+.ink {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 7px 10px 7px 7px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--bench-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease);
+}
+
+.ink:hover {
+  background: rgba(236, 230, 217, 0.06);
+}
+
+.ink:focus-visible {
+  outline: 2px solid var(--bench-ink);
+  outline-offset: 1px;
+}
+
+.ink[aria-pressed="true"] {
+  background: rgba(236, 230, 217, 0.09);
+}
+
+.ink-chip {
+  position: relative;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 7px;
+  background: var(--c-paper);
+  isolation: isolate;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.ink-chip i {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+}
+
+.ink-chip i:nth-child(1) { background: var(--c-tint); left: 5px; top: 5px; }
+.ink-chip i:nth-child(2) { background: var(--c-accent); right: 5px; top: 9px; }
+.ink-chip i:nth-child(3) { background: var(--c-key); left: 10px; bottom: 4px; }
+
+.ink-text {
+  display: grid;
+  min-width: 0;
+}
+
+.ink-id {
+  font-size: 13.5px;
+  font-weight: 620;
+  font-variant-numeric: tabular-nums;
+}
+
+.ink-name {
+  font-size: 11.5px;
+  color: var(--bench-dim);
+  font-stretch: 92%;
+  line-height: 1.3;
+}
+
+.ink[aria-pressed="true"] .ink-id::after {
+  content: " · yüklü";
+  font-weight: 450;
+  color: var(--bench-dim);
+}
+
+.hint {
+  margin-top: 14px;
+  padding-left: 7px;
+  font-size: 12px;
+  color: var(--bench-dim);
+}
+
+.colophon {
+  grid-area: foot;
+  align-self: end;
+  font-size: 12px;
+  color: var(--bench-dim);
+  letter-spacing: 0.02em;
+}
+
+/* ── Gregor ── */
+.gregor {
+  position: fixed;
+  z-index: 200;
+  left: 0;
+  bottom: 9px;
+  width: 30px;
+  color: #0c0b0a;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.6));
+}
+
+.gregor.is-walking {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.gregor svg {
+  display: block;
+  width: 100%;
+  overflow: visible;
+}
+
+.gregor ellipse {
+  fill: #1d1a16;
+}
+
+.gregor .apple {
+  fill: #a8322a;
+}
+
+.gregor.is-walking .legs {
+  animation: legs 0.22s steps(2) infinite;
+  transform-origin: 22px 15px;
+}
+
+.gregor:hover .legs {
+  animation-play-state: paused;
+}
+
+@keyframes legs {
+  from { transform: scaleX(1) skewX(0deg); }
+  to { transform: scaleX(0.9) skewX(14deg); }
+}
+
+/* ── Dar ekranlar ── */
+@media (max-width: 900px) {
+  :root {
+    --sheet-w: min(calc(100vw - 40px), 560px);
+  }
+
+  .bench {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas:
+      "shop"
+      "bed"
+      "press"
+      "inks"
+      "foot";
+    row-gap: 26px;
+    padding: 20px 20px 28px;
+  }
+
+  .bed {
+    justify-self: center;
+  }
+
+  .press,
+  .inks {
+    justify-self: center;
+    width: min(100%, 560px);
+  }
+
+  .ticket {
+    margin-top: 26px;
+  }
+
+  .ink-list {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 4px;
+  }
+
+  .ink-name {
+    display: none;
+  }
+
+  .colophon {
+    justify-self: center;
+  }
+
+  .gregor {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --sheet-w: calc(100vw - 32px);
+  }
+
+  .bench {
+    padding: 16px 16px 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gregor {
+    display: none;
+  }
+
+  .prog a::before,
+  .arr,
+  .pull-knob {
+    transition: none;
+  }
+}
+
+/* ── Gerçek kâğıda bas ── */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+  }
+
+  body::before,
+  .shop,
+  .press,
+  .inks,
+  .colophon,
+  .gregor,
+  .roller,
+  .sheet.is-stacked,
+  .age {
+    display: none !important;
+  }
+
+  .bench {
+    display: block;
+    padding: 0;
+  }
+
+  .sheet {
+    --sheet-w: 180mm;
+    margin: 0 auto;
+    box-shadow: none;
+    transform: none !important;
+  }
+
+  .sheet .plate {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+}

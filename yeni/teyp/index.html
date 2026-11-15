@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Osman Şahin — OS-58 kasetçalar, A ve B yüzü" />
+  <title>Osman Şahin · OS-58</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Kalam:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <main class="stage">
+    <div class="deck" id="deck" aria-label="OS-58 kasetçalar">
+      <!-- Üst şerit -->
+      <div class="plate">
+        <div class="brand"><span class="brand-w">SAMSA</span><span class="brand-m">OS-58</span></div>
+        <div class="plate-r">Stereo kasetçalar · 2 kafa · Dolby yok</div>
+      </div>
+
+      <div class="body">
+        <!-- Kaset bölmesi -->
+        <div class="well">
+          <svg class="cassette" id="cassette" viewBox="0 0 460 290" aria-hidden="true">
+            <defs>
+              <linearGradient id="shell" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#3a3836" />
+                <stop offset="1" stop-color="#232220" />
+              </linearGradient>
+              <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#fff" stop-opacity=".22" />
+                <stop offset=".35" stop-color="#fff" stop-opacity=".04" />
+                <stop offset=".36" stop-color="#fff" stop-opacity=".12" />
+                <stop offset=".5" stop-color="#fff" stop-opacity="0" />
+                <stop offset="1" stop-color="#000" stop-opacity=".25" />
+              </linearGradient>
+              <radialGradient id="pack" r=".5">
+                <stop offset=".55" stop-color="#4a2c1b" />
+                <stop offset=".9" stop-color="#5d3a24" />
+                <stop offset="1" stop-color="#3b2214" />
+              </radialGradient>
+              <clipPath id="win"><rect x="128" y="132" width="204" height="70" rx="8" /></clipPath>
+            </defs>
+            <!-- kaset gövdesi -->
+            <rect x="14" y="14" width="432" height="262" rx="14" fill="url(#shell)" />
+            <path d="M92 276 L112 228 H348 L368 276 Z" fill="#1c1b1a" />
+            <!-- etiket -->
+            <rect x="34" y="30" width="392" height="190" rx="6" fill="#efe7d4" />
+            <rect x="34" y="30" width="392" height="30" rx="6" fill="#d9452f" />
+            <rect x="34" y="52" width="392" height="8" fill="#d9452f" />
+            <text x="50" y="52" class="lab-side">A</text>
+            <text x="400" y="52" class="lab-c" text-anchor="end">C-60</text>
+            <g class="lab-lines">
+              <line x1="50" y1="92" x2="410" y2="92" />
+              <line x1="50" y1="118" x2="120" y2="118" /><line x1="340" y1="118" x2="410" y2="118" />
+            </g>
+            <text x="230" y="88" class="lab-hand" text-anchor="middle">Osman Şahin</text>
+            <text x="230" y="214" class="lab-small" text-anchor="middle">yığın değil · işçi · web tasarımcı · fani</text>
+            <!-- pencere -->
+            <rect x="128" y="132" width="204" height="70" rx="8" fill="#141312" />
+            <g clip-path="url(#win)">
+              <circle id="packL" cx="175" cy="167" r="58" fill="url(#pack)" />
+              <circle id="packR" cx="285" cy="167" r="30" fill="url(#pack)" />
+              <rect x="128" y="132" width="204" height="70" fill="url(#glass)" />
+            </g>
+            <!-- makaralar -->
+            <g id="reelL" transform="translate(175 167)">
+              <circle r="20" fill="#f3efe6" /><circle r="11" fill="#1c1b1a" />
+              <g fill="#f3efe6"><rect x="-2.5" y="-14" width="5" height="6" /><rect x="-2.5" y="8" width="5" height="6" />
+                <rect x="-14" y="-2.5" width="6" height="5" /><rect x="8" y="-2.5" width="6" height="5" />
+                <rect x="-2.5" y="-14" width="5" height="6" transform="rotate(60)" /><rect x="-2.5" y="-14" width="5" height="6" transform="rotate(-60)" /></g>
+            </g>
+            <g id="reelR" transform="translate(285 167)">
+              <circle r="20" fill="#f3efe6" /><circle r="11" fill="#1c1b1a" />
+              <g fill="#f3efe6"><rect x="-2.5" y="-14" width="5" height="6" /><rect x="-2.5" y="8" width="5" height="6" />
+                <rect x="-14" y="-2.5" width="6" height="5" /><rect x="8" y="-2.5" width="6" height="5" />
+                <rect x="-2.5" y="-14" width="5" height="6" transform="rotate(60)" /><rect x="-2.5" y="-14" width="5" height="6" transform="rotate(-60)" /></g>
+            </g>
+            <!-- vidalar -->
+            <g fill="#6b6762"><circle cx="30" cy="262" r="4" /><circle cx="430" cy="262" r="4" /><circle cx="230" cy="248" r="4" /><circle cx="30" cy="24" r="4" /><circle cx="430" cy="24" r="4" /></g>
+          </svg>
+          <div class="door-glass" aria-hidden="true"></div>
+          <span class="well-lbl">Kaset</span>
+        </div>
+
+        <!-- Göstergeler -->
+        <div class="instruments">
+          <div class="meters">
+            <svg class="vu" viewBox="0 0 200 120" aria-hidden="true">
+              <defs>
+                <radialGradient id="lamp" cx=".5" cy="1" r="1"><stop offset="0" stop-color="#ffe7a6" /><stop offset="1" stop-color="#e9c46f" /></radialGradient>
+              </defs>
+              <rect width="200" height="120" rx="6" fill="url(#lamp)" />
+              <g class="vu-scale" id="scaleL"></g>
+              <text x="100" y="98" class="vu-t" text-anchor="middle">VU</text>
+              <text x="14" y="112" class="vu-ch">L</text>
+              <line id="needleL" x1="100" y1="150" x2="100" y2="30" class="needle" />
+              <rect x="0" y="104" width="200" height="16" fill="#1d1c1a" opacity=".85" />
+            </svg>
+            <svg class="vu" viewBox="0 0 200 120" aria-hidden="true">
+              <rect width="200" height="120" rx="6" fill="url(#lamp)" />
+              <g class="vu-scale" id="scaleR"></g>
+              <text x="100" y="98" class="vu-t" text-anchor="middle">VU</text>
+              <text x="14" y="112" class="vu-ch">R</text>
+              <line id="needleR" x1="100" y1="150" x2="100" y2="30" class="needle" />
+              <rect x="0" y="104" width="200" height="16" fill="#1d1c1a" opacity=".85" />
+            </svg>
+          </div>
+          <div class="knobs">
+            <div class="knob-wrap"><span class="knob" data-knob="vol" role="slider" tabindex="0" aria-label="Ses" aria-valuemin="0" aria-valuemax="10" aria-valuenow="6"><i></i></span><em>Ses</em></div>
+            <div class="knob-wrap"><span class="knob" data-knob="tone" role="slider" tabindex="0" aria-label="Ton" aria-valuemin="0" aria-valuemax="10" aria-valuenow="5"><i></i></span><em>Ton</em></div>
+          </div>
+          <div class="counter-row">
+            <div class="counter" aria-label="Bant sayacı">
+              <span class="digit"><span class="strip" id="d0"></span></span>
+              <span class="digit"><span class="strip" id="d1"></span></span>
+              <span class="digit"><span class="strip" id="d2"></span></span>
+            </div>
+            <button class="reset" id="reset" type="button" aria-label="Sayacı sıfırla"></button>
+            <span class="led" id="led" aria-hidden="true"></span><span class="led-l">REC</span>
+          </div>
+        </div>
+
+        <!-- Hoparlör -->
+        <div class="grille" aria-hidden="true"></div>
+
+        <!-- Tuşlar -->
+        <div class="keys" role="group" aria-label="Bant tuşları">
+          <button class="key key--rec" data-k="rec" type="button" aria-pressed="false"><span class="dot"></span><em>Kayıt</em></button>
+          <button class="key" data-k="rew" type="button" aria-label="Geri sar"><span>◀◀</span><em>Geri</em></button>
+          <button class="key" data-k="play" type="button" aria-pressed="false" aria-label="Çal"><span>▶</span><em>Çal</em></button>
+          <button class="key" data-k="ff" type="button" aria-label="İleri sar"><span>▶▶</span><em>İleri</em></button>
+          <button class="key" data-k="stop" type="button" aria-label="Durdur ve çıkar"><span>■ ⏏</span><em>Dur</em></button>
+          <button class="key" data-k="pause" type="button" aria-pressed="false" aria-label="Duraklat"><span>❚❚</span><em>Duraklat</em></button>
+        </div>
+        <div class="jacks" aria-hidden="true">
+          <span><i></i>Mik</span><span><i></i>Hat</span><span><i class="big"></i>Kulaklık</span>
+        </div>
+      </div>
+      <div class="feet" aria-hidden="true"><i></i><i></i></div>
+    </div>
+
+    <!-- Kaset kapağı (J-kart) -->
+    <section class="jcard" aria-labelledby="jc-h">
+      <div class="jc-spine"><span>SAMSA · Osman Şahin · OS-58 kayıtları</span></div>
+      <div class="jc-body">
+        <h1 id="jc-h">Osman Şahin</h1>
+        <p class="jc-sub">Yığın değil · İşçi · Web tasarımcı · Fani</p>
+        <h2>A yüzü</h2>
+        <ol class="tracks">
+          <li><a href="https://blog.sahinosman.com" target="_blank" rel="noopener noreferrer" data-at="0"><b>Blog</b><span>blog.sahinosman.com</span><time>000</time></a></li>
+          <li><a href="https://www.youtube.com/@Tezgah-b" target="_blank" rel="noopener noreferrer" data-at="112"><b>Tezgâh</b><span>@Tezgah-b</span><time>112</time></a></li>
+          <li><a href="https://www.youtube.com/user/sahinosman58" target="_blank" rel="noopener noreferrer" data-at="205"><b>YouTube</b><span>sahinosman58</span><time>205</time></a></li>
+          <li><a href="https://vsco.co/samsaninsirtinayapisanelma/" target="_blank" rel="noopener noreferrer" data-at="318"><b>VSCO</b><span>fotoğraflar</span><time>318</time></a></li>
+        </ol>
+        <h2>B yüzü</h2>
+        <ol class="tracks">
+          <li><a href="https://tr.pinterest.com/osuranboga/" target="_blank" rel="noopener noreferrer" data-at="421"><b>Pinterest</b><span>osuranboga</span><time>421</time></a></li>
+          <li><a href="https://github.com/osmansahin" target="_blank" rel="noopener noreferrer" data-at="530"><b>GitHub</b><span>osmansahin</span><time>530</time></a></li>
+          <li><a href="mailto:sahinosman.58@gmail.com?Subject=Merhabaa" data-at="642"><b>E-posta</b><span>bir merhaba yaz</span><time>642</time></a></li>
+        </ol>
+        <p class="jc-note">Çal tuşuna bas. Parçanın üstüne gelince bant oraya sarılır.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="teyp.js"></script>
+</body>
+
+</html>

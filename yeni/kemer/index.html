@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Osman Şahin — kemerli pencere, pervazdaki kitaplar" />
+  <title>Osman Şahin · Kemer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Barlow+Condensed:wght@500;600;700&family=Kalam&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <main class="wall">
+    <div class="plates">
+      <div class="enamel">
+        <span class="en-k">Yığın Değil Sokağı</span>
+        <h1>Osman Şahin</h1>
+        <span class="en-s">İşçi · Web tasarımcı · Fani</span>
+      </div>
+      <div class="doorno" aria-hidden="true">58</div>
+    </div>
+
+    <div class="window">
+      <div class="reveal">
+        <div class="opening">
+          <canvas id="view" aria-hidden="true"></canvas>
+          <div class="glass" aria-hidden="true"></div>
+          <svg class="frame" viewBox="0 0 400 580" preserveAspectRatio="none" aria-hidden="true">
+            <path class="sash" d="M8 580 V200 A192 192 0 0 1 392 200 V580" />
+            <line class="bar" x1="8" y1="200" x2="392" y2="200" />
+            <line class="bar" x1="200" y1="200" x2="200" y2="572" />
+            <line class="bar bar--t" x1="8" y1="388" x2="392" y2="388" />
+            <path class="bar bar--t" d="M130 200 A70 70 0 0 1 270 200" />
+            <line class="bar bar--t" x1="200" y1="130" x2="200" y2="8" />
+            <line class="bar bar--t" x1="150.5" y1="150.5" x2="64" y2="64" />
+            <line class="bar bar--t" x1="249.5" y1="150.5" x2="336" y2="64" />
+            <line class="bar bar--t" x1="130" y1="200" x2="8" y2="200" />
+            <rect class="sash" x="8" y="572" width="384" height="8" />
+            <circle class="latch" cx="210" cy="380" r="6" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="sill">
+        <ul class="shelf">
+          <li><a class="book" href="https://blog.sahinosman.com" target="_blank" rel="noopener noreferrer" style="--w:58px;--h:200px;--c:#7b2d26;--b:#d3a64e"><span>Blog</span><small>blog.sahinosman.com</small></a></li>
+          <li><a class="book" href="https://www.youtube.com/@Tezgah-b" target="_blank" rel="noopener noreferrer" style="--w:46px;--h:176px;--c:#2f4a3c;--b:#e6d6a8"><span>Tezgâh</span><small>@Tezgah-b</small></a></li>
+          <li><a class="book" href="https://www.youtube.com/user/sahinosman58" target="_blank" rel="noopener noreferrer" style="--w:40px;--h:188px;--c:#1f2f4f;--b:#c9b37a"><span>YouTube</span><small>sahinosman58</small></a></li>
+          <li><a class="book book--lean" href="https://vsco.co/samsaninsirtinayapisanelma/" target="_blank" rel="noopener noreferrer" style="--w:52px;--h:164px;--c:#d9cfb8;--b:#7b2d26;--t:#2a2622"><span>VSCO</span><small>fotoğraf</small></a></li>
+          <li><a class="book" href="https://tr.pinterest.com/osuranboga/" target="_blank" rel="noopener noreferrer" style="--w:36px;--h:150px;--c:#a0612f;--b:#f1e3c2"><span>Pinterest</span><small>osuranboga</small></a></li>
+          <li><a class="book" href="https://github.com/osmansahin" target="_blank" rel="noopener noreferrer" style="--w:48px;--h:182px;--c:#272624;--b:#b9b4a6"><span>GitHub</span><small>osmansahin</small></a></li>
+          <li><a class="letter" href="mailto:sahinosman.58@gmail.com?Subject=Merhabaa"><span class="lt-stamp" aria-hidden="true"></span><span class="lt-to">Osman Şahin'e</span><span class="lt-s">E-posta · bir merhaba yaz</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">© Osman Şahin</p>
+  </main>
+
+  <script src="mountain-data.js"></script>
+  <script src="kemer.js"></script>
+</body>
+
+</html>

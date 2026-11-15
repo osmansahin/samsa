@@ -1,0 +1,533 @@
+/* ============================================================
+   Samsa paftası — basılı topografik harita
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --paper: #f7f4ea;
+  --ink: #1d1f22;
+  --dim: #5d5a52;
+  --brown: #b06a33;
+  --blue: #2a78b4;
+  --green: #5d8f45;
+  --red: #c23a2b;
+  --sans: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --serif: 'Spectral', Georgia, serif;
+  --face-w: min(calc((100dvh - 250px) * 4 / 3), calc(100vw - 470px));
+}
+
+html,
+body {
+  background: #d9d4c4;
+}
+
+body {
+  min-height: 100dvh;
+  padding: 14px;
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sheet {
+  min-height: calc(100dvh - 28px);
+  background: var(--paper);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 20px 50px -24px rgba(60, 50, 30, 0.5);
+  padding: 14px 26px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.strip b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.strip--top {
+  padding-bottom: 26px;
+}
+
+.body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 34px;
+  align-items: start;
+}
+
+/* ── Harita yüzü ── */
+.face-wrap {
+  position: relative;
+  width: var(--face-w);
+  margin: 0 22px 0 28px;
+}
+
+.face {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  outline: 1.6px solid var(--ink);
+  outline-offset: 0;
+  background: var(--paper);
+}
+
+.face::after {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 0.8px solid var(--ink);
+  pointer-events: none;
+}
+
+.face canvas,
+.face svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.ticks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-size: 11px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tk small {
+  font-size: 0.75em;
+  font-weight: 500;
+}
+
+.tk {
+  position: absolute;
+  line-height: 1;
+}
+
+.tk--top { top: -22px; transform: translateX(-50%); }
+.tk--bot { bottom: -22px; transform: translateX(-50%); }
+.tk--left { left: -11px; transform: translate(-100%, -50%); }
+.tk--right { right: -11px; transform: translate(100%, -50%); }
+
+.geo {
+  position: absolute;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.geo--tl { display: none; }
+.geo--br { right: 0; bottom: -38px; }
+
+/* SVG içerik */
+#overlay text {
+  font-family: var(--sans);
+}
+
+.road-o {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 3.6;
+  stroke-linejoin: round;
+}
+
+.road-i {
+  fill: none;
+  stroke: #f0a35a;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+  stroke-dasharray: 5 2.5;
+  stroke-linejoin: round;
+}
+
+.path--main {
+  stroke: var(--red);
+  stroke-width: 1.5;
+}
+
+.place {
+  cursor: pointer;
+  outline: none;
+}
+
+.hit {
+  fill: transparent;
+}
+
+.sym-fill { fill: var(--ink); }
+.sym-ring { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+.sym-line { stroke: var(--ink); stroke-width: 1.1; }
+.sym-line-b path { stroke: var(--ink); stroke-width: 1.8; fill: none; stroke-linecap: round; }
+.sym-tree { fill: #7aa65e; stroke: #3f6b2b; stroke-width: 0.8; }
+.sym-ptt { fill: var(--paper); stroke: var(--ink); stroke-width: 0.9; }
+.ptt { font-size: 7px; font-weight: 700; fill: var(--ink); }
+
+.lbl text,
+.lb-water,
+.lb-tip {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.lb-peak { font-size: 14px; font-weight: 700; fill: var(--ink); }
+.lb-h { font-size: 11px; font-weight: 600; fill: var(--ink); }
+.lb-nature { font-family: var(--serif) !important; font-style: italic; font-size: 14px; fill: var(--ink); }
+.lb-site { font-size: 13px; font-weight: 600; fill: var(--ink); }
+.lb-forest { font-family: var(--serif) !important; font-style: italic; font-size: 14px; fill: #355f22; letter-spacing: 0.04em; }
+.lb-village { font-size: 14px; font-weight: 700; letter-spacing: 0.16em; fill: var(--ink); }
+.lb-town { font-size: 21px; font-weight: 700; letter-spacing: 0.22em; fill: var(--ink); }
+.lb-water { font-family: var(--serif) !important; font-style: italic; font-size: 12.5px; fill: var(--blue); letter-spacing: 0.12em; }
+
+.lb-tip {
+  font-size: 11.5px;
+  font-weight: 600;
+  fill: var(--red);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.place .sym {
+  transition: transform 0.25s cubic-bezier(.22, 1, .36, 1);
+}
+
+.place.is-hot .sym,
+.place:focus-visible .sym {
+  transform: scale(1.35);
+}
+
+.place.is-hot .lb-tip,
+.place:focus-visible .lb-tip {
+  opacity: 1;
+}
+
+.place.is-hot .lbl text:first-child,
+.place:focus-visible .lbl text:first-child {
+  fill: var(--red);
+}
+
+.place:focus-visible .hit {
+  stroke: var(--red);
+  stroke-width: 1.5;
+}
+
+/* ── Kenar bilgisi (sağ) ── */
+.collar {
+  display: grid;
+  gap: 26px;
+  align-content: start;
+  max-width: 420px;
+}
+
+.title-kicker {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.title h1 {
+  margin-top: 6px;
+  font-size: clamp(42px, 4.4vw, 64px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.title-sub {
+  margin-top: 10px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 16px;
+}
+
+.cap {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-bottom: 1.4px solid var(--ink);
+  padding-bottom: 5px;
+  margin-bottom: 6px;
+}
+
+.gaz table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.gaz th {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--dim);
+  text-align: left;
+  padding: 2px 0 4px;
+}
+
+.gaz td {
+  padding: 5px 0 4px;
+  border-bottom: 0.8px dotted rgba(0, 0, 0, 0.35);
+  vertical-align: baseline;
+}
+
+.gaz .r {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  padding-left: 14px;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.gaz a {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 16px;
+  text-decoration: none;
+  border-bottom: 1.5px solid transparent;
+}
+
+.gaz a:hover,
+.gaz tr.is-hot a {
+  color: var(--red);
+  border-color: currentColor;
+}
+
+.gaz a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.gaz .what {
+  margin-left: 8px;
+  font-size: 13px;
+  color: var(--dim);
+}
+
+.legend ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  font-size: 13.5px;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.15;
+}
+
+.legend svg {
+  flex: none;
+  width: 40px;
+  height: 14px;
+}
+
+.legend svg > path:not([class]),
+.legend svg > rect:not([class]) {
+  fill: var(--ink);
+}
+
+.lg-idx { fill: none; stroke: var(--brown); stroke-width: 1.8; }
+.lg-cnt { fill: none; stroke: var(--brown); stroke-width: 0.8; }
+.lg-water { fill: none; stroke: var(--blue); stroke-width: 1.4; }
+.lg-lake { fill: #aad3ec; }
+.lg-forest { fill: #d6e6c4; }
+.lg-tree { fill: rgba(96, 140, 72, 0.7); }
+.lg-road-o { stroke: var(--ink); stroke-width: 4.5; }
+.lg-road-i { stroke: #f0a35a; stroke-width: 2.4; }
+.lg-path { stroke: var(--red); stroke-width: 1.6; stroke-dasharray: 5 2.5; }
+
+/* ── Alt şerit ── */
+.strip--bottom {
+  margin-top: 40px;
+  padding-top: 12px;
+  border-top: 0.8px solid rgba(0, 0, 0, 0.3);
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 150px 110px auto;
+  align-items: end;
+  gap: 26px;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  font-size: 12px;
+}
+
+.scale svg {
+  width: 250px;
+  height: 46px;
+  display: block;
+}
+
+.scale .b { fill: var(--ink); }
+.scale .w { fill: var(--paper); }
+.scale .frame { fill: none; stroke: var(--ink); stroke-width: 0.8; }
+.scale text { font-family: var(--sans); font-size: 10px; font-weight: 600; fill: var(--ink); }
+.scale text.m { font-weight: 500; fill: var(--dim); }
+
+.profile .cap {
+  border: 0;
+  margin: 0 0 2px;
+  padding: 0;
+  font-size: 11px;
+  color: var(--dim);
+}
+
+.profile svg {
+  display: block;
+  width: 100%;
+  height: 64px;
+}
+
+.pf { fill: rgba(176, 106, 51, 0.16); }
+.pl { fill: none; stroke: var(--brown); stroke-width: 1.4; vector-effect: non-scaling-stroke; }
+.pg { stroke: rgba(0, 0, 0, 0.18); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.pt { font-family: var(--sans); font-size: 9px; fill: var(--dim); }
+
+.profile-meta {
+  margin-top: 2px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.decl {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+}
+
+.decl svg {
+  width: 44px;
+  height: 52px;
+  flex: none;
+  overflow: visible;
+}
+
+.decl line { stroke: var(--ink); stroke-width: 1.2; }
+.decl .mag { stroke-dasharray: 3 2; }
+.decl .grid { stroke-width: 0.8; }
+.decl path { fill: var(--ink); }
+.decl text { font-size: 9px; fill: var(--ink); }
+
+.decl p,
+.adj p {
+  color: var(--dim);
+  line-height: 1.3;
+}
+
+.adj {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+}
+
+.adj-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 18px);
+  border: 0.8px solid var(--ink);
+}
+
+.adj-grid span {
+  height: 15px;
+  font-size: 8.5px;
+  text-align: center;
+  line-height: 15px;
+  border: 0.4px solid rgba(0, 0, 0, 0.35);
+}
+
+.adj-grid .me {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+}
+
+.imprint {
+  color: var(--dim);
+  text-align: right;
+  line-height: 1.35;
+}
+
+/* ── Dar ekran ── */
+@media (max-width: 1080px) {
+  :root {
+    --face-w: calc(100vw - 28px - 52px - 50px);
+  }
+
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 58px;
+  }
+
+  .collar {
+    max-width: none;
+  }
+
+  .strip--bottom {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .profile {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+}
+
+@media (max-width: 560px) {
+  body { padding: 6px; }
+
+  .sheet { padding: 12px 12px 14px; }
+
+  :root {
+    --face-w: calc(100vw - 12px - 24px - 44px);
+  }
+
+  .face-wrap { margin: 0 22px; }
+
+  .strip--top { font-size: 10.5px; padding-bottom: 30px; }
+  .strip--top .strip-mid { display: none; }
+
+  .tk { font-size: 9px; }
+  .tk:nth-child(4n+3), .tk:nth-child(4n+4) { display: none; }
+  .geo { display: none; }
+
+  .legend ul { grid-template-columns: 1fr; }
+
+  .strip--bottom { grid-template-columns: 1fr; }
+  .imprint { text-align: left; }
+}

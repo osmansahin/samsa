@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Osman Şahin — kâğıt kolaj" />
+  <title>Osman Şahin · Kolaj</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Anton&family=Bodoni+Moda:ital,wght@0,700;1,700&family=Barlow+Condensed:wght@600;700;800&family=Special+Elite&family=Courier+Prime:wght@400;700&family=Kalam:wght@400;700&family=Playfair+Display:ital,wght@1,800&family=Libre+Caslon+Text:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <filter id="torn" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="4" seed="3" />
+      <feDisplacementMap in="SourceGraphic" scale="9" />
+    </filter>
+    <filter id="torn2" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" seed="11" />
+      <feDisplacementMap in="SourceGraphic" scale="6" />
+    </filter>
+  </svg>
+
+  <main class="board" id="board">
+    <!-- zemin parçaları -->
+    <div class="piece paper paper--a" style="--x:6%;--y:9%;--r:-4deg" aria-hidden="true"></div>
+    <div class="piece paper paper--b" style="--x:58%;--y:58%;--r:3deg" aria-hidden="true"></div>
+    <div class="piece paper paper--c" style="--x:70%;--y:6%;--r:6deg" aria-hidden="true"></div>
+
+    <figure class="piece print" style="--x:16%;--y:30%;--r:-2deg" aria-hidden="true">
+      <canvas id="print"></canvas>
+      <span class="tape tape--tl"></span><span class="tape tape--br"></span>
+    </figure>
+
+    <!-- ad: kesilmiş harfler -->
+    <h1 class="piece name" style="--x:20%;--y:12%;--r:-1.5deg" aria-label="Osman Şahin" id="name">Osman Şahin</h1>
+
+    <p class="piece dymo" style="--x:24%;--y:63%;--r:1.5deg">Yığın değil · İşçi · Web tasarımcı · Fani</p>
+
+    <!-- bağlantılar -->
+    <a class="piece clip-news" style="--x:66%;--y:22%;--r:3deg" href="https://blog.sahinosman.com" target="_blank" rel="noopener noreferrer">
+      <span class="cn-k">Kültür · Sanat</span>
+      <span class="cn-h">Yazılar tek adreste</span>
+      <span class="cn-b"></span>
+      <span class="cn-u">blog.sahinosman.com</span>
+      <span class="tape tape--t"></span>
+    </a>
+
+    <a class="piece tag" style="--x:83%;--y:40%;--r:9deg" href="https://www.youtube.com/@Tezgah-b" target="_blank" rel="noopener noreferrer">
+      <span class="tag-hole" aria-hidden="true"></span>
+      <span class="tag-h">Tezgâh</span>
+      <span class="tag-s">atölye kanalı<br />@Tezgah-b</span>
+    </a>
+
+    <a class="piece dymo dymo--red" style="--x:56%;--y:50%;--r:-3deg" href="https://www.youtube.com/user/sahinosman58" target="_blank" rel="noopener noreferrer">▶ YouTube · sahinosman58</a>
+
+    <a class="piece polaroid" style="--x:4%;--y:57%;--r:-7deg" href="https://vsco.co/samsaninsirtinayapisanelma/" target="_blank" rel="noopener noreferrer">
+      <span class="pol-img" aria-hidden="true"></span>
+      <span class="pol-c">VSCO · kareler</span>
+      <span class="tape tape--t"></span>
+    </a>
+
+    <a class="piece swatch" style="--x:47%;--y:71%;--r:4deg" href="https://tr.pinterest.com/osuranboga/" target="_blank" rel="noopener noreferrer">
+      <span class="pin" aria-hidden="true"></span>
+      <span class="sw-col" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="sw-t">Pinterest<br /><small>osuranboga</small></span>
+    </a>
+
+    <a class="piece printout" style="--x:68%;--y:70%;--r:-2deg" href="https://github.com/osmansahin" target="_blank" rel="noopener noreferrer">
+      <span class="po-l">$ git clone github.com/osmansahin</span>
+      <span class="po-l">Cloning into 'samsa'...</span>
+      <span class="po-l">done. ▌</span>
+    </a>
+
+    <a class="piece stamp" style="--x:86%;--y:12%;--r:-6deg" href="mailto:sahinosman.58@gmail.com?Subject=Merhabaa">
+      <span class="st-in">
+        <span class="st-v">58</span>
+        <span class="st-t">Merhaba</span>
+        <span class="st-s">e-posta</span>
+      </span>
+    </a>
+
+    <p class="piece note" style="--x:5%;--y:84%;--r:-2deg" aria-hidden="true">parçaları sürükleyebilirsin →</p>
+    <p class="piece credit" style="--x:86%;--y:93%;--r:0deg">© Osman Şahin</p>
+  </main>
+
+  <script src="mountain-data.js"></script>
+  <script src="kolaj.js"></script>
+</body>
+
+</html>
