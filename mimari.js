@@ -13,11 +13,11 @@
     { id: "blog", no: "01", name: "Okuma odası", fin: "Meşe parke", x: 12, y: 12, w: 542, h: 462,
       href: "https://blog.sahinosman.com", link: "Blog", sub: "blog.sahinosman.com", lx: 300, ly: 300 },
     { id: "youtube", no: "02", name: "Salon · gösterim", fin: "Meşe parke", x: 566, y: 12, w: 822, h: 462,
-      href: "https://www.youtube.com/user/sahinosman58", link: "YouTube", sub: "sahinosman58", lx: 800, ly: 345 },
+      href: "https://www.youtube.com/@Tezgah-b", link: "YouTube - Tezgâh", sub: "@Tezgah-b", lx: 800, ly: 345 },
     { id: "tezgah", no: "03", name: "Mutfak", fin: "Seramik", x: 12, y: 486, w: 442, h: 402,
-      href: "https://www.youtube.com/@Tezgah-b", link: "Tezgâh", sub: "@Tezgah-b", lx: 262, ly: 548 },
+      href: "https://www.youtube.com/user/sahinosman58", link: "YouTube - Kurabiye Denemeleri", sub: "sahinosman58", lx: 262, ly: 548 },
     { id: "pinterest", no: "04", name: "Hol · pano duvarı", short: "Hol", fin: "Doğal taş", x: 466, y: 486, w: 288, h: 402,
-      href: "https://tr.pinterest.com/osuranboga/", link: "Pinterest", sub: "osuranboga", lx: 625, ly: 700 },
+      href: "https://tr.pinterest.com/osuranboga/", link: "Pinterest", sub: "eski pinler", lx: 625, ly: 700 },
     { id: "vsco", no: "05", name: "Karanlık oda", fin: "Epoksi", x: 766, y: 486, w: 248, h: 208, scale: 0.78,
       href: "https://vsco.co/samsaninsirtinayapisanelma/", link: "VSCO", sub: "fotoğraf", lx: 856, ly: 590 },
     { id: "github", no: "06", name: "Arşiv", fin: "Brüt beton", x: 1026, y: 486, w: 362, h: 402,
@@ -206,7 +206,7 @@
 
     p.push(`<defs>
       <pattern id="hover-hatch" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-        <line x1="0" y1="0" x2="0" y2="16" class="hatch-line"/></pattern>
+        <line x1="0" y1="0" x2="0" y2="16" class="hover-hatch-line"/></pattern>
     </defs>`);
 
     // Akslar
@@ -297,32 +297,229 @@
     return d;
   }
 
+  // ── Kesit A-A Riso Dağ Kalıbı (riso.js motoru) ────────────
+  function hashPeriodic(x, y, W) {
+    const period = Math.round(W * 2);
+    const wx = ((Math.round(x * 2) % period) + period) % period;
+    const wy = Math.round(y * 2);
+    let h = Math.imul(wx + 374761393, 668265263) ^ Math.imul(wy + 1274126177, 2246822519);
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+  }
+
+  function sampleMountain(px, meta, x, y, ch) {
+    const wx = ((x % meta.w) + meta.w) % meta.w;
+    if (y < meta.yTop || y >= meta.h) return 0;
+    const gx = Math.min(meta.gw - 1, Math.floor((wx / meta.w) * meta.gw));
+    const gy = Math.min(meta.gh - 1, Math.floor(((y - meta.yTop) / (meta.h - meta.yTop)) * meta.gh));
+    return px[(gy * meta.gw + gx) * 4 + ch] / 255;
+  }
+
+  function hexToRgb(hex) {
+    const c = hex.replace("#", "");
+    return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)];
+  }
+
+  function buildRisoMountainUrl(meta, cb) {
+    if (!meta || !meta.maskPng) return;
+    const img = new Image();
+    img.onload = () => {
+      const mCanvas = document.createElement("canvas");
+      mCanvas.width = meta.gw;
+      mCanvas.height = meta.gh;
+      const mCtx = mCanvas.getContext("2d");
+      mCtx.drawImage(img, 0, 0);
+      const px = mCtx.getImageData(0, 0, meta.gw, meta.gh).data;
+
+      const Y_CROP_TOP = 168;
+      const scale = 1.1;
+      const W = meta.w;
+      const H = meta.h;
+      const Hcrop = H - Y_CROP_TOP;
+      const cw = Math.round(W * scale);
+      const ch = Math.round(Hcrop * scale);
+
+      // 1) Kalıp 3: 14.04° dikişsiz nokta tramı
+      const cCool = document.createElement("canvas");
+      cCool.width = cw;
+      cCool.height = ch;
+      const gCool = cCool.getContext("2d");
+      gCool.scale(scale, scale);
+      gCool.translate(0, -Y_CROP_TOP);
+      gCool.fillStyle = "#000";
+      const dx = W / 255;
+      const dy = dx / 4;
+      gCool.beginPath();
+      for (let v = -75; v < 75; v++) {
+        for (let u = -25; u < 285; u++) {
+          const cx = u * dx - v * dy;
+          const cy = meta.yTop - 8 + u * dy + v * dx;
+          if (cx < -6 || cx > W + 6 || cy < meta.yTop - 2 || cy > H + 4) continue;
+          const d = sampleMountain(px, meta, cx, cy, 0);
+          if (d < 0.14) continue;
+          const radius = Math.sqrt(d) * 2.52 * (0.94 + hashPeriodic(cx, cy, W) * 0.12);
+          gCool.moveTo(cx + radius, cy);
+          gCool.arc(cx, cy, radius, 0, Math.PI * 2);
+        }
+      }
+      gCool.fill();
+
+      // 2) Kalıp 2: 45° mimari tarama çizgileri
+      const cWarm = document.createElement("canvas");
+      cWarm.width = cw;
+      cWarm.height = ch;
+      const gWarm = cWarm.getContext("2d");
+      gWarm.scale(scale, scale);
+      gWarm.translate(0, -Y_CROP_TOP);
+      gWarm.strokeStyle = "#000";
+      gWarm.lineCap = "round";
+      const stepWarm = 6;
+      const yMin = meta.yTop;
+      for (let k = Math.floor((yMin - 10) / stepWarm); k <= Math.ceil((W + H + 10) / stepWarm); k++) {
+        const s = k * stepWarm;
+        const xStart = Math.max(-8, s - H);
+        const xEnd = Math.min(W + 8, s - yMin);
+        if (xEnd <= xStart) continue;
+        let drawing = false, segX0 = 0, segY0 = 0, maxW = 0;
+        for (let x = xStart; x <= xEnd; x += 2.5) {
+          const y = s - x;
+          const wVal = sampleMountain(px, meta, x, y, 1);
+          const hit = wVal > 0.18 && hashPeriodic(x, y, W) > 0.04;
+          if (hit && !drawing) { drawing = true; segX0 = x; segY0 = y; maxW = wVal; }
+          else if (hit && drawing) { if (wVal > maxW) maxW = wVal; }
+          else if (!hit && drawing) {
+            drawing = false;
+            gWarm.lineWidth = 0.85 + maxW * 1.15;
+            gWarm.beginPath(); gWarm.moveTo(segX0, segY0); gWarm.lineTo(x - 2.5, s - (x - 2.5)); gWarm.stroke();
+          }
+        }
+        if (drawing) {
+          gWarm.lineWidth = 0.85 + maxW * 1.15;
+          gWarm.beginPath(); gWarm.moveTo(segX0, segY0); gWarm.lineTo(xEnd, s - xEnd); gWarm.stroke();
+        }
+      }
+
+      // 3) Kalıp 1: -45° derin tarama + sırt konturu
+      const cDark = document.createElement("canvas");
+      cDark.width = cw;
+      cDark.height = ch;
+      const gDark = cDark.getContext("2d");
+      gDark.scale(scale, scale);
+      gDark.translate(0, -Y_CROP_TOP);
+      gDark.strokeStyle = "#000";
+      gDark.fillStyle = "#000";
+      gDark.lineCap = "round";
+      gDark.lineJoin = "round";
+      const stepDark = 5;
+      for (let k = Math.floor((-H - 10) / stepDark); k <= Math.ceil((W - yMin + 10) / stepDark); k++) {
+        const s = k * stepDark;
+        const xStart = Math.max(-8, s + yMin);
+        const xEnd = Math.min(W + 8, s + H);
+        if (xEnd <= xStart) continue;
+        let drawing = false, segX0 = 0, segY0 = 0, maxD = 0;
+        for (let x = xStart; x <= xEnd; x += 2) {
+          const y = x - s;
+          const dVal = sampleMountain(px, meta, x, y, 2);
+          const hit = dVal > 0.25 && hashPeriodic(x + 17, y + 31, W) > 0.03;
+          if (hit && !drawing) { drawing = true; segX0 = x; segY0 = y; maxD = dVal; }
+          else if (hit && drawing) { if (dVal > maxD) maxD = dVal; }
+          else if (!hit && drawing) {
+            drawing = false;
+            gDark.lineWidth = 1.05 + maxD * 1.95;
+            gDark.beginPath(); gDark.moveTo(segX0, segY0); gDark.lineTo(x - 2, (x - 2) - s); gDark.stroke();
+          }
+        }
+        if (drawing) {
+          gDark.lineWidth = 1.05 + maxD * 1.95;
+          gDark.beginPath(); gDark.moveTo(segX0, segY0); gDark.lineTo(xEnd, xEnd - s); gDark.stroke();
+        }
+      }
+      for (let y = meta.yTop; y < H; y += 3) {
+        for (let x = 0; x < W; x += 3) {
+          if (sampleMountain(px, meta, x, y, 2) > 0.72 && hashPeriodic(x + 7, y + 13, W) > 0.14) {
+            gDark.fillRect(x - 1.2, y - 1.2, 2.5, 2.5);
+          }
+        }
+      }
+      const ridge = meta.ridge;
+      const nR = ridge.length;
+      gDark.lineWidth = 2.15;
+      gDark.beginPath();
+      for (let i = -2; i <= nR + 2; i++) {
+        const idx = ((i % nR) + nR) % nR;
+        const x = (i / nR) * W;
+        const y = ridge[idx];
+        if (i === -2) gDark.moveTo(x, y);
+        else {
+          const prevIdx = (((i - 1) % nR) + nR) % nR;
+          const px0 = ((i - 1) / nR) * W;
+          const py0 = ridge[prevIdx];
+          gDark.quadraticCurveTo(px0, py0, (px0 + x) * 0.5, (py0 + y) * 0.5);
+        }
+      }
+      gDark.stroke();
+
+      // Riso kayıt kayması + paftaya uyumlu 3 mürekkep multiply birleşimi
+      const dCool = gCool.getImageData(0, 0, cw, ch).data;
+      const dWarm = gWarm.getImageData(0, 0, cw, ch).data;
+      const dDark = gDark.getImageData(0, 0, cw, ch).data;
+      const sxCool = Math.round(-2 * scale), syCool = Math.round(2 * scale);
+      const sxWarm = Math.round(2.5 * scale), syWarm = Math.round(1.5 * scale);
+
+      const [pr, pg, pb] = hexToRgb("#F3EEE4");
+      const [r1, g1, b1] = hexToRgb("#064f6e");
+      const [r2, g2, b2] = hexToRgb("#c2ae93");
+      const [r3, g3, b3] = hexToRgb("#a7d4e4");
+      const n1r = 1 - r1 / 255, n1g = 1 - g1 / 255, n1b = 1 - b1 / 255;
+      const n2r = 1 - r2 / 255, n2g = 1 - g2 / 255, n2b = 1 - b2 / 255;
+      const n3r = 1 - r3 / 255, n3g = 1 - g3 / 255, n3b = 1 - b3 / 255;
+
+      const compCanvas = document.createElement("canvas");
+      compCanvas.width = cw;
+      compCanvas.height = ch;
+      const compCtx = compCanvas.getContext("2d");
+      const compImg = compCtx.createImageData(cw, ch);
+      const out = compImg.data;
+
+      for (let y = 0; y < ch; y++) {
+        const yC = y - syCool, yW = y - syWarm;
+        const validC = yC >= 0 && yC < ch, validW = yW >= 0 && yW < ch;
+        const rowOff = y * cw, rowC = yC * cw, rowW = yW * cw;
+        for (let x = 0; x < cw; x++) {
+          const pos = rowOff + x;
+          const a3 = dDark[pos * 4 + 3];
+          const a1 = validC ? dCool[(rowC + ((x - sxCool + cw) % cw)) * 4 + 3] : 0;
+          const a2 = validW ? dWarm[(rowW + ((x - sxWarm + cw) % cw)) * 4 + 3] : 0;
+          if ((a1 | a2 | a3) === 0) continue;
+          const c1 = a1 / 255, c2 = a2 / 255, c3 = a3 / 255;
+          const aT = 1 - (1 - c1) * (1 - c2) * (1 - c3);
+          const q = pos * 4;
+          if (aT <= 0.002) continue;
+          const tr = (1 - c1 * n3r) * (1 - c2 * n2r) * (1 - c3 * n1r);
+          const tg = (1 - c1 * n3g) * (1 - c2 * n2g) * (1 - c3 * n1g);
+          const tb = (1 - c1 * n3b) * (1 - c2 * n2b) * (1 - c3 * n1b);
+          const invA = 1 / aT;
+          out[q] = Math.round(pr * Math.max(0, Math.min(1, 1 - (1 - tr) * invA)));
+          out[q + 1] = Math.round(pg * Math.max(0, Math.min(1, 1 - (1 - tg) * invA)));
+          out[q + 2] = Math.round(pb * Math.max(0, Math.min(1, 1 - (1 - tb) * invA)));
+          out[q + 3] = Math.round(aT * 255);
+        }
+      }
+      compCtx.putImageData(compImg, 0, 0);
+      cb(compCanvas.toDataURL("image/png"));
+    };
+    img.src = meta.maskPng;
+  }
+
   // ── Kesit A-A ─────────────────────────────────────────────
   function buildSection() {
     const svg = document.getElementById("section");
     const p = [];
     const M = window.SAMSA_MOUNTAIN;
 
-    // Arka plan dağ silueti (pencerelerden ve yapının iki yanından görünür)
-    let ridgeD = "";
-    if (M && M.ridge) {
-      const n = M.ridge.length;
-      const offset = 140;
-      const pts = [];
-      for (let x = -300; x <= 1690; x += 8) {
-        const i = Math.floor(offset + ((x + 300) / 1990) * 260) % n;
-        const ry = M.ridge[i];
-        const y = -120 - (288 - ry) * 1.25;
-        pts.push(`${x} ${f(y)}`);
-      }
-      ridgeD = "M" + pts.join("L") + "L1690 0L-300 0Z";
-    }
-
     p.push(`<defs>
       <pattern id="earth" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
         <line x1="0" y1="0" x2="0" y2="22" class="hatch-line"/><line x1="11" y1="0" x2="11" y2="22" class="hatch-line" stroke-dasharray="3 5"/></pattern>
-      <pattern id="mnt" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
-        <line x1="0" y1="0" x2="0" y2="9" class="mnt-line"/></pattern>
       <clipPath id="view">
         <rect x="-300" y="-600" width="287" height="600"/>
         <rect x="1413" y="-600" width="280" height="600"/>
@@ -331,9 +528,7 @@
       </clipPath>
     </defs>`);
 
-    if (ridgeD) {
-      p.push(`<g clip-path="url(#view)"><path class="mountain" d="${ridgeD}"/></g>`);
-    }
+    p.push(`<g clip-path="url(#view)"><g id="riso-mountain-track" class="riso-mountain-track"></g></g>`);
 
     // Toprak
     p.push(`<rect x="-300" y="20" width="1990" height="110" fill="url(#earth)" class="earth"/>`);
@@ -365,6 +560,10 @@
 
     // İnsan figürü (ölçek)
     p.push(`<g class="figure" transform="translate(760 0)">
+      <g class="figure-halo" aria-hidden="true">
+        <circle cx="0" cy="-163" r="11"/>
+        <path d="M0 -150 V-80 M0 -140 L-18 -95 M0 -140 L16 -96 M0 -80 L-12 0 M0 -80 L10 0"/>
+      </g>
       <circle cx="0" cy="-163" r="11"/>
       <path d="M0 -150 V-80 M0 -140 L-18 -95 M0 -140 L16 -96 M0 -80 L-12 0 M0 -80 L10 0"/></g>`);
 
@@ -402,9 +601,20 @@
     }
     p.push(`</g>`);
 
-    p.push(`<text class="note" x="1490" y="-420" text-anchor="middle">arka planda dağ</text>`);
+    p.push(`<text class="note" x="1490" y="-450" text-anchor="middle">arka planda dağ</text>`);
     p.push(`<path class="leader" d="M1490 -405 L1500 -250"/>`);
     svg.insertAdjacentHTML("beforeend", p.join(""));
+
+    buildRisoMountainUrl(M, (dataUrl) => {
+      const track = document.getElementById("riso-mountain-track");
+      if (!track) return;
+      const tileW = 1355;
+      const tileH = 300;
+      const yTop = -300;
+      track.innerHTML = [0, 1, 2]
+        .map((i) => `<image href="${dataUrl}" x="${-300 + i * tileW}" y="${yTop}" width="${tileW}" height="${tileH}" preserveAspectRatio="none"/>`)
+        .join("");
+    });
   }
 
   // ── Mahal listesi ──
@@ -430,6 +640,41 @@
     });
   }
 
+  // ── Gregor (Samsa) — arada bir paftanın alt kenarından geçer ──
+  function gregor() {
+    const el = document.getElementById("gregor");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!el || reduceMotion) return;
+    const fine = window.matchMedia("(pointer: fine) and (min-width: 901px)");
+    const schedule = (ms) => setTimeout(walk, ms);
+    function walk() {
+      if (!fine.matches || document.hidden) return schedule(30000);
+      const ltr = Math.random() > 0.35;
+      const vw = window.innerWidth;
+      const from = ltr ? -50 : vw + 20;
+      const to = ltr ? vw + 20 : -50;
+      el.classList.add("is-walking");
+      const anim = el.animate(
+        [
+          { transform: `translateX(${from}px) scaleX(${ltr ? 1 : -1})` },
+          { transform: `translateX(${to}px) scaleX(${ltr ? 1 : -1})` },
+        ],
+        { duration: 19000 + Math.random() * 7000, easing: "linear" }
+      );
+      const pause = () => anim.pause();
+      const resume = () => anim.play();
+      el.addEventListener("mouseenter", pause);
+      el.addEventListener("mouseleave", resume);
+      anim.finished.then(() => {
+        el.classList.remove("is-walking");
+        el.removeEventListener("mouseenter", pause);
+        el.removeEventListener("mouseleave", resume);
+        schedule(70000 + Math.random() * 90000);
+      });
+    }
+    schedule(28000 + Math.random() * 20000);
+  }
+
   const d = new Date();
   const pad = (n) => String(n).padStart(2, "0");
   document.getElementById("tb-date").textContent = `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
@@ -439,4 +684,5 @@
   buildSection();
   buildSchedule();
   wireHover();
+  gregor();
 })();

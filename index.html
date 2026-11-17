@@ -4,87 +4,95 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Osman Şahin — Yığın Değil, İşçi, Web Tasarımcı, Fani" />
-  <title>Osman Şahin</title>
-
-  <!-- Google Fonts: Elms Sans (modern, Source Sans Pro'nun yerini alır) -->
+  <meta name="description" content="Osman Şahin — Ev-Atölyesi, Zemin Kat Planı ve A-A Kesiti, Pafta A-01" />
+  <title>Osman Şahin · Pafta A-01</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet">
-
-  <!-- Font Awesome 6 -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=IBM+Plex+Sans+Condensed:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="main.css" />
 </head>
 
 <body>
-  <div id="wrapper">
-    <div id="bg" aria-hidden="true"></div>
-    <div id="overlay" aria-hidden="true"></div>
+  <div class="sheet">
+    <div class="frame">
 
-    <main id="main">
-      <!-- Header -->
-      <header id="header">
-        <h1>Osman Şahin</h1>
-        <p>Yığın Değil &nbsp;&bull;&nbsp; İşçi &nbsp;&bull;&nbsp; Web Tasarımcı &nbsp;&bull;&nbsp; Fani</p>
+      <section class="panel panel--plan" aria-labelledby="plan-title">
+        <svg id="plan" class="drawing" viewBox="-330 -330 1890 1500" role="img"
+          aria-labelledby="plan-title plan-desc">
+          <desc id="plan-desc">Ev-atölyesinin zemin kat planı. Her mahal bir bağlantıdır: okuma odası blog, mutfak Tezgâh kanalı, salon YouTube, karanlık oda VSCO, hol Pinterest, arşiv GitHub, giriş e-posta.</desc>
+        </svg>
+        <h2 class="dwg-title" id="plan-title"><span class="dwg-no">1</span><span>Zemin kat planı</span><small>Ö: 1/50</small></h2>
+      </section>
 
-        <nav aria-label="Sosyal medya bağlantıları">
-          <ul>
-            <li>
-              <a href="https://vsco.co/samsaninsirtinayapisanelma/" target="_blank" rel="noopener noreferrer"
-                aria-label="VSCO">
-                <i class="fa-brands fa-vsco" aria-hidden="true"></i>
-              </a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/user/sahinosman58" target="_blank" rel="noopener noreferrer"
-                aria-label="YouTube">
-                <i class="fa-brands fa-youtube" aria-hidden="true"></i>
-              </a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/@Tezgah-b" target="_blank" rel="noopener noreferrer"
-                aria-label="Tezgâh YouTube kanalı" title="Tezgâh">
-                <span class="icon-logo icon-tezgah" aria-hidden="true"></span>
-              </a>
-            </li>
-            <li>
-              <a href="https://tr.pinterest.com/osuranboga/" target="_blank" rel="noopener noreferrer"
-                aria-label="Pinterest">
-                <i class="fa-brands fa-pinterest" aria-hidden="true"></i>
-              </a>
-            </li>
-            <li>
-              <a href="mailto:sahinosman.58@gmail.com?Subject=Merhabaa" aria-label="E-posta gönder">
-                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </header>
+      <aside class="side">
+        <section class="panel panel--section" aria-labelledby="sec-title">
+          <svg id="section" class="drawing" viewBox="-240 -500 1850 640" role="img" aria-labelledby="sec-title">
+          </svg>
+          <h2 class="dwg-title" id="sec-title"><span class="dwg-no">2</span><span>A-A kesiti</span><small>Ö: 1/50</small></h2>
+        </section>
 
-      <!-- Footer -->
-      <footer id="footer">
-        <span class="copyright">&copy; Osman Şahin</span>
-      </footer>
-    </main>
+        <section class="panel panel--schedule" aria-labelledby="sch-title">
+          <h2 class="tbl-title" id="sch-title">Mahal listesi</h2>
+          <table class="schedule">
+            <thead>
+              <tr><th>No</th><th>Mahal</th><th class="num">Alan m²</th><th class="fin">Döşeme</th><th>Bağlantı</th></tr>
+            </thead>
+            <tbody id="schedule-body"></tbody>
+          </table>
+        </section>
+
+        <section class="titleblock" aria-label="Antet">
+          <div class="tb-mark" aria-hidden="true">
+            <svg viewBox="0 0 60 60"><rect x="3" y="3" width="54" height="54" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M3 57 57 3" stroke="currentColor" stroke-width="1"/><circle cx="30" cy="30" r="13" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>
+          </div>
+          <div class="tb-cell tb-project">
+            <span class="tb-k">Proje</span>
+            <h1 class="tb-v">Osman Şahin<br />Ev–Atölyesi</h1>
+          </div>
+          <div class="tb-cell tb-desc">
+            <span class="tb-k">Yapı tanımı</span>
+            <span class="tb-v">Yığın değil · İşçi · Web tasarımcı · Fani</span>
+          </div>
+          <div class="tb-cell"><span class="tb-k">Pafta adı</span><span class="tb-v">Plan + kesit</span></div>
+          <div class="tb-cell"><span class="tb-k">Ölçek</span><span class="tb-v">1/50</span></div>
+          <div class="tb-cell"><span class="tb-k">Çizen</span><span class="tb-v">O.Ş.</span></div>
+          <div class="tb-cell"><span class="tb-k">Tarih</span><span class="tb-v" id="tb-date">—</span></div>
+          <div class="tb-cell tb-no"><span class="tb-k">Pafta no</span><span class="tb-v">A-01</span></div>
+          <div class="tb-rev">
+            <table>
+              <tr><th>Rev</th><th>Açıklama</th></tr>
+              <tr><td><svg class="rev-tri" viewBox="0 0 24 21" aria-label="Revizyon 1"><path d="M12 1.5 22.5 19.5h-21z" fill="none" stroke="currentColor" stroke-width="1.6"/><text x="12" y="17" text-anchor="middle" font-size="11" font-weight="700" fill="currentColor">1</text></svg></td><td>Arşiv (GitHub) mahali eklendi</td></tr>
+              <tr><td>0</td><td>İlk çizim</td></tr>
+            </table>
+          </div>
+          <svg class="stamp" viewBox="0 0 200 200" aria-hidden="true">
+            <defs><path id="stamp-c" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1-148 0" /></defs>
+            <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="5" />
+            <circle cx="100" cy="100" r="58" fill="none" stroke="currentColor" stroke-width="2.5" />
+            <text font-size="19" letter-spacing="3"><textPath href="#stamp-c">SAMSA YAPI DENETİM · TASDİK ·</textPath></text>
+            <text x="100" y="96" text-anchor="middle" font-size="22" font-weight="700">UYGUNDUR</text>
+            <text x="100" y="122" text-anchor="middle" font-size="15" id="stamp-date">2026</text>
+          </svg>
+        </section>
+      </aside>
+    </div>
   </div>
 
-  <script>
-    // Sayfa yüklenince loading sınıfını kaldır (animasyonları aktif et)
-    window.addEventListener('load', () => {
-      document.body.classList.remove('loading');
-    });
+  <div class="gregor" id="gregor" aria-hidden="true" title="Gregor">
+    <svg viewBox="0 0 44 30">
+      <g class="legs legs-a" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" fill="none">
+        <path d="M14 10 9 3M22 10l0-8M29 10l5-7M14 20l-5 7M22 20v8M29 20l5 7" />
+      </g>
+      <path d="M33 15c0-3 2.5-5 5-5s4 2.2 4 5-1.6 5-4 5-5-2-5-5Z" fill="currentColor" />
+      <path d="M41 12.5l3-3M41 17.5l3 3" stroke="currentColor" stroke-width="1" stroke-linecap="round" />
+      <ellipse cx="21" cy="15" rx="13.5" ry="9.2" fill="currentColor" />
+      <path d="M21 6.2v17.6" stroke="#000" stroke-opacity=".35" stroke-width=".8" />
+      <circle class="apple" cx="17" cy="12.5" r="3.1" />
+    </svg>
+  </div>
 
-    // Mobil: yatay kaydırmayı ve orientation değişimini yönet
-    window.addEventListener('touchmove', (e) => e.preventDefault(), { passive: false });
-    window.addEventListener('orientationchange', () => {
-      document.documentElement.scrollTop = 0;
-    });
-  </script>
+  <script src="mountain-data.js"></script>
+  <script src="mimari.js"></script>
 </body>
 
 </html>

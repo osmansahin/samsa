@@ -1,431 +1,829 @@
 /* ============================================================
-   Osman Şahin — Kişisel Site
-   Modernize: vendor-prefix yok, CSS custom properties,
-               Elms Sans fontu, temiz keyframe'ler
+   Pafta A-01 — ozalit (diazo) baskı kâğıdı üzerinde mimari çizim
    ============================================================ */
 
-@import url("https://fonts.googleapis.com/css2?family=Elms+Sans:ital,wght@0,100..900;1,100..900&display=swap");
-
-/* ── Reset (modern, minimal) ── */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  border: 0;
+}
+
+:root {
+  --paper: #f2f0e8;
+  --paper-2: #ebe8dc;
+  --ink: #5c5c5f;
+  --ink-soft: rgba(35, 48, 107, 0.55);
+  --ink-faint: rgba(35, 48, 107, 0.22);
+  --red: #c4372b;
+  --stamp: #6a3f8f;
+  --hover-hatch: #23306b;
+  --cad: 'IBM Plex Sans Condensed', 'Arial Narrow', sans-serif;
+  --hand: 'Architects Daughter', 'Segoe Print', cursive;
 }
 
 html,
 body {
-  height: 100%;
-  overflow: hidden;
+  background: #33403b;
 }
 
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-main,
-menu,
-nav,
-section,
-summary {
-  display: block;
-}
-
-ol,
-ul {
-  list-style: none;
-}
-
-/* ── Tokens ── */
-:root {
-  --font-body: 'Elms Sans', sans-serif;
-  --font-size-base: 15pt;
-  --color-text: #fff;
-  --color-bg-fallback: #348cb2;
-  --transition-fast: 0.2s ease-in-out;
-  --anim-duration-wrapper: 3s;
-  --anim-duration-overlay: 1.5s;
-  --anim-delay-overlay: 1.5s;
-  --anim-duration-header: 1s;
-  --anim-delay-header: 2.25s;
-  --icon-size: 5.35em;
-}
-
-/* ── Base ── */
 body {
-  font-family: var(--font-body);
-  font-size: var(--font-size-base);
-  font-weight: 300;
-  letter-spacing: -0.025em;
-  line-height: 1.75;
-  color: var(--color-text);
-  background: var(--color-bg-fallback);
-  -webkit-text-size-adjust: none;
+  min-height: 100dvh;
+  color: var(--ink);
+  font-family: var(--cad);
+  -webkit-font-smoothing: antialiased;
+  padding: 14px;
 }
 
-/* Animasyonları yükleme sırasında durdur */
-body.loading * {
-  animation: none !important;
+/* ── Pafta ── */
+.sheet {
+  position: relative;
+  min-height: calc(100dvh - 28px);
+  background:
+    linear-gradient(90deg, transparent 33.2%, rgba(0, 0, 0, 0.035) 33.33%, rgba(255, 255, 255, 0.25) 33.5%, transparent 34%),
+    linear-gradient(90deg, transparent 66.5%, rgba(0, 0, 0, 0.035) 66.66%, rgba(255, 255, 255, 0.25) 66.8%, transparent 67.3%),
+    linear-gradient(180deg, transparent 49.6%, rgba(0, 0, 0, 0.03) 50%, rgba(255, 255, 255, 0.2) 50.2%, transparent 50.8%),
+    radial-gradient(120% 90% at 30% 20%, var(--paper), var(--paper-2));
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
+  padding: 14px 14px 14px 46px; /* sol cilt payı */
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-  outline: 0;
-  border-bottom: dotted 1px;
-  transition: border-color var(--transition-fast);
+.sheet::before {
+  /* ozalit kâğıdının hafif mor-mavi lekelenmesi */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(40% 30% at 85% 90%, rgba(80, 70, 160, 0.05), transparent),
+    radial-gradient(30% 25% at 10% 75%, rgba(80, 70, 160, 0.04), transparent);
 }
 
-a:hover {
-  border-color: transparent;
+.frame {
+  position: relative;
+  height: calc(100dvh - 56px);
+  min-height: 600px;
+  border: 2.2px solid var(--ink);
+  outline: 0.8px solid var(--ink);
+  outline-offset: 4px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(380px, 34%, 560px);
 }
 
-/* ── Keyframes ── */
-@keyframes wrapper {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
+/* ── Paneller ── */
+.panel {
+  position: relative;
+  min-height: 0;
 }
 
-@keyframes bg {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(var(--bg-scroll-end), 0, 0);
-  }
+.panel--plan {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 18px 14px;
+  border-right: 1.4px solid var(--ink);
 }
 
-@keyframes overlay {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes header {
-  from {
-    transform: translate3d(0, 1em, 0);
-    opacity: 0;
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
-}
-
-@keyframes nav-icons {
-  from {
-    transform: translate3d(0, 1em, 0);
-    opacity: 0;
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-    opacity: 1;
-  }
-}
-
-/* ── Wrapper ── */
-#wrapper {
-  animation: wrapper var(--anim-duration-wrapper) forwards;
-  height: 100%;
-  left: 0;
-  opacity: 0;
-  position: fixed;
-  top: 0;
+.drawing {
+  display: block;
   width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
 }
 
-/* ── Background ── */
-:root {
-  --bg-scroll-end: -2250px;
+.side {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
 }
 
-#bg {
-  --bg-size: 2250px;
-  animation: bg 60s linear infinite;
-  backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-  background: var(--color-bg-fallback) url("images/bg.jpg") bottom left;
-  background-repeat: repeat-x;
-  background-size: var(--bg-size) auto;
-  height: 100%;
-  left: 0;
-  opacity: 1;
-  position: fixed;
-  top: 0;
-  width: calc(var(--bg-size) * 3);
+.panel--section {
+  padding: 14px 16px 10px;
+  border-bottom: 1.4px solid var(--ink);
 }
 
-/* ── Overlay ── */
-#overlay {
-  animation: overlay var(--anim-duration-overlay) var(--anim-delay-overlay) forwards;
-  background-attachment: fixed, fixed;
-  background-image: url("images/overlay-pattern.png"), url("images/overlay.svg");
-  background-position: top left, center center;
-  background-repeat: repeat, no-repeat;
-  background-size: auto, cover;
-  height: 100%;
-  left: 0;
-  opacity: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
+.panel--section .drawing {
+  height: auto;
+  aspect-ratio: 1850 / 640;
 }
 
-/* ── Main ── */
-#main {
+.dwg-title {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 100%;
-  left: 0;
-  position: fixed;
-  text-align: center;
-  top: 0;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dwg-title > span:nth-child(2) {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 1px;
+}
+
+.dwg-title small {
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.dwg-no {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1.5px solid var(--ink);
+  border-radius: 50%;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+/* ── Mahal listesi ── */
+.panel--schedule {
+  padding: 12px 16px;
+  overflow: auto;
+  border-bottom: 1.4px solid var(--ink);
+}
+
+.tbl-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.schedule {
   width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
-/* ── Header ── */
-#header {
-  animation: header var(--anim-duration-header) var(--anim-delay-header) forwards;
-  backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-  cursor: default;
-  opacity: 0;
+.schedule th,
+.schedule td {
+  border: 0.8px solid var(--ink-soft);
+  padding: 4px 7px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.schedule th {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(35, 48, 107, 0.06);
+}
+
+.schedule .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.schedule .fin {
+  font-family: var(--hand);
+  font-size: 12.5px;
+}
+
+.schedule tr {
+  transition: background-color 0.15s;
+}
+
+.schedule tbody tr.is-hot {
+  background: rgba(35, 48, 107, 0.09);
+}
+
+.schedule a {
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.schedule a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+/* ── Antet ── */
+.titleblock {
   position: relative;
-  text-align: center;
-  width: 90%;
+  display: grid;
+  grid-template-columns: 74px repeat(4, minmax(0, 1fr));
+  grid-template-rows: auto auto auto auto;
+  font-size: 12px;
 }
 
-#header h1 {
-  font-size: 4.35em;
-  font-weight: 900;
-  letter-spacing: -0.035em;
-  line-height: 1;
+.titleblock > :not(.stamp) {
+  border-right: 0.8px solid var(--ink);
+  border-bottom: 0.8px solid var(--ink);
 }
 
-#header p {
-  font-size: 1.25em;
-  margin: 0.75em 0 0.25em;
+.tb-mark {
+  grid-row: 1 / 3;
+  display: grid;
+  place-items: center;
+  padding: 10px;
+}
+
+.tb-mark svg {
+  width: 46px;
+  height: 46px;
+}
+
+.tb-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px 7px;
+  min-width: 0;
+}
+
+.tb-k {
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tb-v {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tb-project {
+  grid-column: 2 / -1;
+}
+
+.tb-project .tb-v {
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+
+.tb-desc {
+  grid-column: 2 / -1;
+}
+
+.tb-desc .tb-v {
+  font-family: var(--hand);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.tb-no {
+  grid-column: 1 / 2;
+}
+
+.tb-no .tb-v {
+  font-size: 18px;
+}
+
+.tb-rev {
+  grid-column: 1 / -1;
+  padding: 0;
+}
+
+.tb-rev table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+
+.tb-rev th,
+.tb-rev td {
+  border-bottom: 0.6px solid var(--ink-soft);
+  padding: 3px 8px;
+  text-align: left;
+}
+
+.tb-rev th {
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.tb-rev th:first-child,
+.tb-rev td:first-child {
+  width: 66px;
+}
+
+.tb-rev tr:last-child td {
+  border-bottom: 0;
+}
+
+.rev-tri {
+  width: 22px;
+  height: 19px;
+  color: var(--red);
+  vertical-align: middle;
+}
+
+.stamp {
+  position: absolute;
+  width: 132px;
+  height: 132px;
+  right: 18px;
+  bottom: 58px;
+  color: var(--stamp);
+  fill: var(--stamp);
+  font-family: var(--cad);
+  font-weight: 600;
+  transform: rotate(-14deg);
+  opacity: 0.72;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  -webkit-mask-image: radial-gradient(circle at 30% 70%, #000 40%, rgba(0, 0, 0, 0.55) 75%);
+  mask-image: radial-gradient(circle at 30% 70%, #000 40%, rgba(0, 0, 0, 0.55) 75%);
+}
+
+/* ── SVG çizim stilleri ── */
+.drawing text {
+  font-family: var(--cad);
+  fill: var(--ink);
+}
+
+.poche {
+  fill: var(--ink);
+  fill-opacity: 0.9;
+}
+
+.thin {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.hair {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  opacity: 0.8;
+}
+
+.glass {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+}
+
+.leaf {
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.swing {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.1;
+  stroke-dasharray: 2 0;
+  opacity: 0.85;
+}
+
+.hidden {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  stroke-dasharray: 12 8;
+  opacity: 0.7;
+}
+
+.furn,
+.furn-el rect,
+.furn-el path,
+.furn-el line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.3;
+  opacity: 0.85;
+}
+
+.furn-x {
+  stroke: var(--ink);
+  stroke-width: 0.8;
+  opacity: 0.5;
+}
+
+.rug {
+  stroke-dasharray: 3 5;
+  opacity: 0.5;
+}
+
+.pin {
+  fill: var(--red);
+  stroke: none;
+}
+
+.axis {
+  stroke: var(--ink);
+  stroke-width: 1;
+  stroke-dasharray: 40 8 4 8;
+  opacity: 0.45;
+}
+
+.bubble {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.bubtxt {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.dim,
+.ext {
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+.ext {
+  opacity: 0.6;
+}
+
+.tick {
+  stroke: var(--ink);
+  stroke-width: 2.6;
+}
+
+.dimtxt {
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.note {
+  font-family: var(--hand) !important;
+  font-size: 22px;
+  opacity: 0.85;
+}
+
+.lbl-plain {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+}
+
+.level path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.6;
+}
+
+.level text {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.arrow {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2.4;
+}
+
+/* Mahaller */
+.room {
+  cursor: pointer;
+  outline: none;
+}
+
+.room-hit {
+  fill: transparent;
+}
+
+.room-fill {
+  fill: url(#hover-hatch);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.hatch-line {
+  stroke: var(--ink);
+  stroke-width: 1.4;
+  opacity: 0.35;
+}
+
+.hover-hatch-line {
+  stroke: var(--hover-hatch);
+  stroke-width: 1.6;
+  opacity: 0.48;
+}
+
+.room.is-hot .room-fill,
+.room:focus-visible .room-fill {
+  opacity: 1;
+}
+
+.room:focus-visible .room-hit {
+  stroke: var(--red);
+  stroke-width: 5;
+}
+
+.room-label {
+  pointer-events: none;
+}
+
+.lbl-no {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  opacity: 0.7;
+}
+
+.lbl-name {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.lbl-link {
+  font-size: 25px;
+  font-weight: 500;
+  fill: var(--red) !important;
+}
+
+.lbl-area {
+  font-size: 19px;
+  font-weight: 400;
   opacity: 0.75;
 }
 
-#header nav {
-  margin: 1.5em 0 0;
+.room-label.is-hot .lbl-name {
+  text-decoration: underline;
 }
 
-#header nav ul {
-  display: flex;
-  justify-content: center;
-  gap: 0.25em;
-  flex-wrap: wrap;
+.room-label .lbl-link,
+.room-label .lbl-name {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 8px;
+  stroke-linejoin: round;
 }
 
-#header nav li {
-  animation: nav-icons 0.5s ease-in-out forwards;
-  backface-visibility: hidden;
-  transform: translate3d(0, 0, 0);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: var(--icon-size);
-  width: var(--icon-size);
-  opacity: 0;
+.revcloud {
+  fill: none;
+  stroke: var(--red);
+  stroke-width: 2.6;
+  opacity: 0.85;
 }
 
-/* Kademeli ikon animasyon gecikmeleri */
-#header nav li:nth-child(1) {
-  animation-delay: 2.50s;
+.revmark path {
+  fill: var(--paper);
+  stroke: var(--red);
+  stroke-width: 2.6;
 }
 
-#header nav li:nth-child(2) {
-  animation-delay: 2.75s;
+.revmark text {
+  fill: var(--red) !important;
+  font-size: 22px;
+  font-weight: 700;
 }
 
-#header nav li:nth-child(3) {
-  animation-delay: 3.00s;
+.cutline line {
+  stroke: var(--ink);
+  stroke-width: 3;
+  stroke-dasharray: 50 10 6 10;
 }
 
-#header nav li:nth-child(4) {
-  animation-delay: 3.25s;
+.cut-end {
+  stroke: var(--ink);
+  stroke-width: 8;
 }
 
-#header nav li:nth-child(5) {
-  animation-delay: 3.50s;
+.cut-arrow {
+  fill: var(--ink);
 }
 
-#header nav li:nth-child(6) {
-  animation-delay: 3.75s;
+.north circle {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
 }
 
-#header nav li:nth-child(7) {
-  animation-delay: 4.00s;
+.north path {
+  fill: var(--ink);
 }
 
-#header nav li:nth-child(8) {
-  animation-delay: 4.25s;
+.north text,
+.scalebar text {
+  font-size: 26px;
+  font-weight: 600;
 }
 
-#header nav li:nth-child(9) {
-  animation-delay: 4.50s;
+.sb-b {
+  fill: var(--ink);
 }
 
-#header nav li:nth-child(10) {
-  animation-delay: 4.75s;
+.sb-w {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
 }
 
-#header nav a {
-  -webkit-tap-highlight-color: transparent;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  border: solid 1px #fff;
-  font-size: 1.75em;
-  height: 2.5em;
-  width: 2.5em;
-  transition: all var(--transition-fast);
+/* Kesit */
+.ground {
+  stroke: var(--ink);
+  stroke-width: 3;
 }
 
-#header nav a:hover {
-  font-size: 1.925em;
-  /* 1.75 * 1.1 */
-  background-color: rgba(255, 255, 255, 0.175);
+.earth {
+  opacity: 0.9;
 }
 
-#header nav a:active {
-  font-size: 1.6625em;
-  /* 1.75 * 0.95 */
-  background-color: rgba(255, 255, 255, 0.35);
+.cut rect {
+  fill: var(--ink);
+  fill-opacity: 0.9;
 }
 
-/* Özel logo ikonu: Font Awesome ikonlarıyla aynı renkte (currentColor) ve boyutta */
-#header nav .icon-logo {
-  display: block;
-  width: 1.05em;
-  height: 1.05em;
-  background-color: currentColor;
-  -webkit-mask: var(--icon-url) center / contain no-repeat;
-  mask: var(--icon-url) center / contain no-repeat;
+.cutwin .paperfill {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.4;
 }
 
-#header nav .icon-tezgah {
-  --icon-url: url("images/tezgah.png");
+.cutwin line {
+  stroke: var(--ink);
+  stroke-width: 1.2;
 }
 
-/* ── Footer ── */
-#footer {
-  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.5) 75%);
-  bottom: 0;
-  cursor: default;
-  height: 6em;
+.hair-g line {
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.7;
+}
+
+@keyframes riso-mountain-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-1355px, 0, 0);
+  }
+}
+
+.riso-mountain-track {
+  opacity: 0.78;
+  will-change: transform;
+  animation: riso-mountain-scroll 60s linear infinite;
+}
+
+#section .dimtxt,
+#section .level text {
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 7px;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .riso-mountain-track {
+    animation: none;
+  }
+}
+
+.figure circle,
+.figure path {
+  fill: none;
+  stroke: #2c2d30;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.figure .figure-halo circle {
+  fill: var(--paper);
+}
+
+.figure .figure-halo circle,
+.figure .figure-halo path {
+  stroke: var(--paper);
+  stroke-width: 11;
+}
+
+.leader {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+
+/* ── Dar ekran: paftayı katla ── */
+@media (max-width: 980px) {
+  body {
+    padding: 8px;
+  }
+
+  .sheet {
+    padding: 10px 10px 10px 26px;
+    min-height: 0;
+  }
+
+  .frame {
+    height: auto;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel--plan {
+    border-right: 0;
+    border-bottom: 1.4px solid var(--ink);
+    padding: 12px 8px;
+  }
+
+  .panel--plan .drawing {
+    flex: none;
+    height: auto;
+    aspect-ratio: 1890 / 1500;
+  }
+
+  .panel--schedule {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 560px) {
+  .schedule .fin {
+    display: none;
+  }
+
+  .titleblock {
+    grid-template-columns: 58px repeat(2, minmax(0, 1fr));
+  }
+
+  .tb-mark {
+    grid-row: 1 / 2;
+  }
+
+  .tb-desc,
+  .tb-rev {
+    grid-column: 1 / -1;
+  }
+
+  .stamp {
+    width: 104px;
+    height: 104px;
+    bottom: 76px;
+  }
+}
+
+#section .note { font-size: 34px; }
+#section .level text, #section .dimtxt { font-size: 32px; }
+
+/* ── Gregor ── */
+.gregor {
+  position: fixed;
+  z-index: 200;
   left: 0;
-  line-height: 8em;
-  position: absolute;
-  text-align: center;
+  bottom: 16px;
+  width: 30px;
+  color: #1d1a16;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+.gregor.is-walking {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.gregor svg {
+  display: block;
   width: 100%;
+  overflow: visible;
 }
 
-/* ── Responsive: Wide (≤ 1680px) ── */
-@media screen and (max-width: 1680px) {
-  :root {
-    --bg-scroll-end: -1500px;
-  }
-
-  body {
-    font-size: 13pt;
-  }
-
-  #bg {
-    --bg-size: 1500px;
-    background-size: var(--bg-size) auto;
-    width: calc(var(--bg-size) * 3);
-  }
+.gregor ellipse {
+  fill: #1d1a16;
 }
 
-/* ── Responsive: Normal (≤ 1280px) ── */
-@media screen and (max-width: 1280px) {
-  :root {
-    --bg-scroll-end: -750px;
-  }
-
-  body {
-    font-size: 12pt;
-  }
-
-  #bg {
-    --bg-size: 750px;
-    background-size: var(--bg-size) auto;
-    width: calc(var(--bg-size) * 3);
-  }
+.gregor .apple {
+  fill: #c4372b;
 }
 
-/* ── Responsive: Mobile (≤ 736px) ── */
-@media screen and (max-width: 736px) {
-  :root {
-    --bg-scroll-end: -300px;
-  }
-
-  body {
-    min-width: 320px;
-    font-size: 11pt;
-  }
-
-  #bg {
-    --bg-size: 300px;
-    background-size: var(--bg-size) auto;
-    width: calc(var(--bg-size) * 3);
-  }
-
-  #header h1 {
-    font-size: 2.5em;
-  }
-
-  #header p {
-    font-size: 1em;
-  }
-
-  #header nav {
-    font-size: 1em;
-  }
-
-  #header nav a:hover,
-  #header nav a:active {
-    font-size: 1.75em;
-  }
+.gregor.is-walking .legs {
+  animation: gregor-legs 0.22s steps(2) infinite;
+  transform-origin: 22px 15px;
 }
 
-/* ── Responsive: Mobile Portrait (≤ 480px) ── */
-@media screen and (max-width: 480px) {
-  :root {
-    --bg-scroll-end: -412.5px;
-  }
+.gregor:hover .legs {
+  animation-play-state: paused;
+}
 
-  #bg {
-    --bg-size: 412.5px;
-    background-size: var(--bg-size) auto;
-    width: calc(var(--bg-size) * 3);
-  }
+@keyframes gregor-legs {
+  from { transform: scaleX(1) skewX(0deg); }
+  to { transform: scaleX(0.9) skewX(14deg); }
+}
 
-  #header nav {
-    padding: 0 1em;
+@media (max-width: 900px), (prefers-reduced-motion: reduce), print {
+  .gregor {
+    display: none !important;
   }
 }
